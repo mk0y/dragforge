@@ -26,6 +26,8 @@ export default function App() {
     const loadFiles = async () => {
       const files = await readGenFiles();
       for (let file of files) {
+        if (file === ".keep") continue;
+        console.log({ file });
         const Component = lazy(() => import(`@/components/gen/${file}`));
         const key = `draggable-${file}`;
         const draggableMarkup = (
