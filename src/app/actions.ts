@@ -37,7 +37,6 @@ export const sendGPTQuery = async (query: string) => {
     fs.writeFileSync(`src/components/gen/${componentName}.tsx`, finalContent);
     return componentName;
   };
-
   const chatCompletion = await openai.chat.completions.create({
     messages: [
       {
@@ -71,6 +70,34 @@ Don't import any CSS files.`,
     return { componentName };
   }
   return {};
+};
+
+export const generateRandomComponentQuery = async () => {
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content: `I want you to act as a frontend developer.
+I will ask you to generate a text which will instruct someone what component to build.
+For example:
+Example 1: A header with logo on the left. Don't put image in the logo, just write "Logo". On the right should be menu items "Dashboard", "Docs", "Pricing", "Blog". Header should drop some shadow to the bottom.
+Or:
+Example 2: A button with blue-green gradient from top to bottom. Text color should be white. No borders. On hover it should zoom in just a tiny bit.
+These examples are for random React component descriptions that I want to give to someone so they can make them.
+It can be about anything, like Button, Accordion, Container, Avatar, Checkbox, Badge, Combobox, Dialog, etc.`,
+      },
+      {
+        role: "user",
+        content: "Please generate for me a random React component description.",
+      },
+    ],
+    model: "gpt-4o-mini",
+  });
+  const content = chatCompletion.choices[0].message.content;
+  if (!content) {
+    return { content: "" };
+  }
+  return { content };
 };
 
 export const readGenFiles = async () => {

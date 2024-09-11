@@ -1,6 +1,8 @@
 "use client";
 
-import { sendGPTQuery } from "@/app/actions";
+import { generateRandomComponentQuery, sendGPTQuery } from "@/app/actions";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import React, { Suspense, useEffect, useState } from "react";
 
@@ -26,23 +28,41 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
       setComponent(() => <LazyComponent />);
     }
   }, [componentName]);
-
   const handleSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     onSubmit(value);
     e.currentTarget.form?.requestSubmit();
     setValue("");
   };
-
   return (
     <>
       <div className="relative flex items-center w-full">
-        <textarea
+        <Textarea
+          name="query"
+          className="pr-48"
+          value={value}
+          placeholder="Build me a... and press Enter"
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={async (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              const { componentName } = await sendGPTQuery(
+                e.currentTarget.value
+              );
+              if (componentName) {
+                setComponentName(componentName);
+                console.log("Component name:", componentName);
+                setValue("");
+              }
+            }
+          }}
+        />
+        {/* <textarea
           name="query"
           className="flex-grow p-3 pr-10 min-h-[50px] resize-none border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Build me a..."
+          placeholder="Build me a... and press Enter"
           onKeyDown={async (e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -57,13 +77,20 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
             }
           }}
           rows={1}
-        />
-        <button
-          type="submit"
-          className="absolute right-2 bottom-2 flex items-center justify-center w-8 h-8 text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring"
-        >
-          <Send size={18} />
-        </button>
+        /> */}
+        <div className="absolute right-2">
+          <Button
+            onClick={async () => {
+              const { content } = await generateRandomComponentQuery();
+              console.log({ content });
+              setValue(content);
+            }}
+            className="text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring"
+          >
+            <Send size={18} className="mr-1" />
+            Generate random
+          </Button>
+        </div>
       </div>
       {LazyComponent && (
         <Suspense fallback={<div>Loading...</div>}>{LazyComponent}</Suspense>
