@@ -57,6 +57,7 @@ Don't import any CSS files.`,
     model: "gpt-4o-mini",
   });
   const content = chatCompletion.choices[0].message.content;
+  console.log({ __filename, __dirname });
   if (content) {
     const componentName = writeToFile(content);
     return { componentName };
