@@ -12,15 +12,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const sendQuery = async (formData: FormData) => {
-  const query = formData.get("query");
-  const data = await fetch("http://localhost:3000/api/generate", {
-    method: "POST",
-    body: JSON.stringify({ query }),
-  }).then((res) => res.json());
-  console.log("Data:", data);
-};
-
 export const sendGPTQuery = async (query: string) => {
   const writeToFile = (content: string) => {
     const trimmedContent = content
@@ -55,6 +46,7 @@ Use icons from lucide-react. Take colors into account, if the color is not speci
 Components should have background color, border color, text color, icon color and shadow, where applicable.
 No explanations needed since I'm also a developer and I will understand the code.
 Don't write any example code, just the code.
+If you want to use primitive component from shadcn you can import it as: \`import { Button } from "@/components/ui/button";\`. Or import { Textarea } from "@/components/ui/textarea";\`. And so forth. Don't make up relative imports like \`import { Button } from "./Button";\` to fake it, use explicitly this \`"@/components/ui/Component"\` location notation.
 Don't import any CSS files.`,
       },
       {
@@ -84,7 +76,18 @@ Example 1: A header with logo on the left. Don't put image in the logo, just wri
 Or:
 Example 2: A button with blue-green gradient from top to bottom. Text color should be white. No borders. On hover it should zoom in just a tiny bit.
 These examples are for random React component descriptions that I want to give to someone so they can make them.
-It can be about anything, like Button, Accordion, Container, Avatar, Checkbox, Badge, Combobox, Dialog, etc.`,
+It can be about anything, like Button, Accordion, Container, Avatar, Alert, Checkbox, Badge, Combobox, Calendar, Carousel, Collapsible, Context Menu, Date Picker, Drawer, Menu Bar, Radio Group, Form, Progress Bar, Hover Card, etc.
+Always give the component its width and height. Never use h-screen, use h-full instead.
+Be more creative, don't always create Card component. Never create Modal component.
+Always create components with relative position. Children can have other position values, but main component should always have position "relative".
+Never assume we have any other module installed except "react" and "lucide-react". For example, this is wrong \`import { useOutsideClick } from '@chakra-ui/react';\` because we don't have "@chakra-ui" installed.
+Always hardcode elements inside the component, never assume there are component arguments like \`({ items })\`.
+Always give the component a background, never use transparent background.
+Developers notes:
+1. 'onKeyPress' is deprecated. Use 'onKeyDown' instead.
+2. This is wrong syntax for rendering children: \`<span className="text-xl">{MenuIcon}</span>\`; this is correct \`<span className="text-xl"><MenuIcon /></span>\`.
+3. This is wrong import \`import { Link } from "react-router-dom";\`, never use "react-router-dom". Always use <a> tags.
+`,
       },
       {
         role: "user",

@@ -4,14 +4,16 @@ import { generateRandomComponentQuery, sendGPTQuery } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface TextareaWithSubmitProps {
   onSubmit: (value: string) => void;
+  onFinished: () => void;
 }
 
 const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
   onSubmit,
+  onFinished,
 }) => {
   const [value, setValue] = useState("");
   const [componentName, setComponentName] = useState<string | null>(null);
@@ -19,15 +21,30 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
   const handleLoadComponent = (name: string) => {
     setComponentName(name);
   };
-  useEffect(() => {
-    if (componentName) {
-      console.log("Loading component:", componentName);
-      const LazyComponent = React.lazy(
-        () => import(`@/components/gen/${componentName}`)
-      );
-      setComponent(() => <LazyComponent />);
-    }
-  }, [componentName]);
+  // useEffect(() => {
+  //   if (componentName) {
+  //     try {
+  //       console.log("Loading component:", componentName);
+  //       const LazyComponent = React.lazy(
+  //         () => import(`@/components/gen/${componentName}`)
+  //       );
+  //       setComponent(() => <LazyComponent />);
+  //     } catch (e) {
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.log("///// ERROR /////");
+  //       console.error(e);
+  //     }
+  //   }
+  // }, [componentName]);
   const handleSubmit = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
     onSubmit(value);
@@ -53,6 +70,7 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
                 setComponentName(componentName);
                 console.log("Component name:", componentName);
                 setValue("");
+                onFinished();
               }
             }
           }}
@@ -92,9 +110,9 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
           </Button>
         </div>
       </div>
-      {LazyComponent && (
+      {/* {LazyComponent && (
         <Suspense fallback={<div>Loading...</div>}>{LazyComponent}</Suspense>
-      )}
+      )} */}
     </>
   );
 };
