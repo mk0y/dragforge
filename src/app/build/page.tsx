@@ -1,5 +1,6 @@
 "use client";
 import QueryInput from "@/components/QueryInput/query-input";
+import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
 import { DndContext } from "@dnd-kit/core";
 import { omit, pick } from "ramda";
@@ -36,11 +37,11 @@ export default function App() {
         const key = `draggable-${file}`;
         console.log({ Component });
         // await sleep(400);
-        // const draggableMarkup = (
-        //   <Draggable key={key} id={key}>
-        //     <Component />
-        //   </Draggable>
-        // );
+        const draggableMarkup = (
+          <Draggable key={key} id={key}>
+            <Component />
+          </Draggable>
+        );
         // setDraggableComponents((draggableComponents) =>
         //   Object.assign({}, draggableComponents, { [key]: draggableMarkup })
         // );
