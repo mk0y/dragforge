@@ -33,7 +33,7 @@ export default function App() {
       for (let file of files) {
         if (file === ".keep") continue;
         console.log({ file }, `@/components/gen/${file}`);
-        const Component = lazy(() => import(`@/components/gen/${file}`));
+        const Component = lazy(() => import(`../../components/gen/${file}`));
         const key = `draggable-${file}`;
         console.log({ Component });
         await sleep(400);
