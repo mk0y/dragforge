@@ -61,10 +61,10 @@ export default function App() {
       <div className="flex flex-col flex-1 z-10 w-full text-sm">
         <DndContext onDragEnd={handleDragEnd}>
           <div className="h-auto min-h-20 flex items-center justify-center p-6 *:w-full my-6 w-[800px] bg-lines-45 m-auto">
-            <div>123</div>
-            {/* {draggableComponentsLength > 0
+            <div key={1987}>123</div>
+            {draggableComponentsLength > 0
               ? [Object.values(draggableComponents)]
-              : null} */}
+              : null}
           </div>
           <Droppable key="draggable" id="draggable" dropped={dropped}>
             {!dropped ? (
