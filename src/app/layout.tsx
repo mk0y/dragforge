@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const fontSans = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -24,6 +25,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Script src="https://cdn.tailwindcss.com" />
       </body>
     </html>
   );

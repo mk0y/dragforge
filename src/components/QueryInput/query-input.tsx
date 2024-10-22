@@ -1,6 +1,8 @@
 "use client";
-
-import { generateRandomComponentQuery, sendGPTQuery } from "@/app/actions";
+import {
+  askGPTWhichComponentsToUse,
+  generateRandomComponentQuery,
+} from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
@@ -8,7 +10,7 @@ import React, { useState } from "react";
 
 interface TextareaWithSubmitProps {
   onSubmit: (value: string) => void;
-  onFinished: () => void;
+  onFinished: (str: string) => void;
 }
 
 const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
@@ -63,15 +65,19 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
           onKeyDown={async (e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
-              const { componentName } = await sendGPTQuery(
+              const { content } = await askGPTWhichComponentsToUse(
                 e.currentTarget.value
               );
-              if (componentName) {
-                setComponentName(componentName);
-                console.log("Component name:", componentName);
-                setValue("");
-                onFinished();
+              if (content) {
+                onFinished(content);
+                // console.log(content);
               }
+              // if (componentName) {
+              //   setComponentName(componentName);
+              //   console.log("Component name:", componentName);
+              //   setValue("");
+              //   onFinished();
+              // }
             }
           }}
         />

@@ -4,6 +4,10 @@ import { readdir } from "fs/promises";
 import { OpenAI } from "openai";
 import path from "path";
 import { fileURLToPath } from "url";
+import {
+  askGPTWhichComponentsToUse_Completion,
+  assembleComponentsUsingGPT_Completion,
+} from "./completions";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +15,28 @@ const __dirname = path.dirname(__filename);
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+export const askGPTWhichComponentsToUse = async (query: string) => {
+  const { content: componentsCommaStr } =
+    await askGPTWhichComponentsToUse_Completion(query);
+  const componentNames = componentsCommaStr?.split(",").map((s) => s.trim());
+  console.log({ componentNames });
+  if (componentNames && componentNames[0]) {
+    const buttonStr = fs.readFileSync(
+      `src/components/palette/${componentNames[0]}.tsx`,
+      "utf-8"
+    );
+    const { content } = await assembleComponentsUsingGPT_Completion(
+      query,
+      buttonStr
+    );
+    console.log({ content });
+    return { content };
+    // console.log({ buttonStr });
+  } else {
+    return {};
+  }
+};
 
 export const sendGPTQuery = async (query: string) => {
   const writeToFile = (content: string) => {
@@ -34,9 +60,9 @@ export const sendGPTQuery = async (query: string) => {
         role: "system",
         content:
           // "You are an expert frontend developer with deep knowledge in React and CSS. I will ask you a few questions and you will provide Typescript code snippets with 2 spaces indentation as answers. No explanations needed since I'm also a developer and I will understand the code.",
-          `I want you to act as a frontend developer and generate functional React components.
+          `I want you to act as a senior frontend developer and generate functional React components.
 You write code in Typescript.
-Components should be styled using classNames from TailwindCSS.
+Components should be styled using classNames.
 Code indentation will be 2 spaces.
 The components should be ready to use, with clean and modern designs that require minimal tweaks.
 Focus on creating reusable and responsive components that follow best practices for React.

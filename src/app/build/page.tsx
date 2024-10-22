@@ -1,11 +1,10 @@
 "use client";
 import QueryInput from "@/components/QueryInput/query-input";
-import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
 import { DndContext } from "@dnd-kit/core";
 import { omit, pick } from "ramda";
-import { lazy, useEffect, useState } from "react";
-import { readGenFiles } from "../actions";
+import { useEffect, useState } from "react";
+import JsxParser from "react-jsx-parser";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -14,6 +13,7 @@ function sleep(ms: number) {
 export default function App() {
   const [dropped, setDropped] = useState(false);
   const [componentFinished, incComponentFinished] = useState(0);
+  const [jsxStr, setJsxStr] = useState("");
   const [draggableComponents, setDraggableComponents] = useState<
     Record<string, React.ReactElement>
   >({});
@@ -27,41 +27,42 @@ export default function App() {
       setDropped(false);
     }
   }, [draggableComponentsLength, droppedComponentsLength]);
-  useEffect(() => {
-    const loadFiles = async () => {
-      const files = await readGenFiles();
-      for (let file of files) {
-        if (file === ".keep") continue;
-        console.log({ file }, `@/components/gen/${file}`);
-        const Component = lazy(() => import(`../../components/gen/${file}abc`));
-        const key = `draggable-${file}`;
-        console.log({ Component });
-        // await sleep(400);
-        const draggableMarkup = (
-          <Draggable key={key} id={key}>
-            <Component />
-          </Draggable>
-        );
-        setDraggableComponents((draggableComponents) =>
-          Object.assign({}, draggableComponents, { [key]: draggableMarkup })
-        );
-      }
-    };
-    loadFiles();
-  }, [componentFinished]);
+  // useEffect(() => {
+  //   const loadFiles = async () => {
+  //     const files = await readGenFiles();
+  //     for (let file of files) {
+  //       if (file === ".keep") continue;
+  //       console.log({ file }, `@/components/gen/${file}`);
+  //       const Component = lazy(() => import(`../../components/gen/${file}abc`));
+  //       const key = `draggable-${file}`;
+  //       console.log({ Component });
+  //       // await sleep(400);
+  //       const draggableMarkup = (
+  //         <Draggable key={key} id={key}>
+  //           <Component />
+  //         </Draggable>
+  //       );
+  //       setDraggableComponents((draggableComponents) =>
+  //         Object.assign({}, draggableComponents, { [key]: draggableMarkup })
+  //       );
+  //     }
+  //   };
+  //   loadFiles();
+  // }, [componentFinished]);
   // console.log(Object.values(droppedComponents), { droppedComponents });
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-12">
       <QueryInput
         onSubmit={(query) => console.log(query)}
-        onFinished={() => {
-          incComponentFinished((v) => v + 1);
+        onFinished={(jsx: string) => {
+          setJsxStr(jsx);
+          // incComponentFinished((v) => v + 1);
         }}
       />
       <div className="flex flex-col flex-1 z-10 w-full text-sm">
         <DndContext onDragEnd={handleDragEnd}>
           <div className="h-auto min-h-20 flex items-center justify-center p-6 *:w-full my-6 w-[800px] bg-lines-45 m-auto">
-            <div key={1987}>123</div>
+            {jsxStr && <JsxParser jsx={jsxStr} />}
             {draggableComponentsLength > 0
               ? [Object.values(draggableComponents)]
               : null}
