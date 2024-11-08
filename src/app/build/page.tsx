@@ -1,8 +1,10 @@
 "use client";
 import QueryInput from "@/components/QueryInput/query-input";
+import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
 import { DndContext } from "@dnd-kit/core";
-import { omit, pick } from "ramda";
+import { Puzzle } from "lucide-react";
+import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import JsxParser from "react-jsx-parser";
 
@@ -10,108 +12,112 @@ function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+interface DraggableStateComponent {
+  id?: string;
+  jsx?: string;
+}
+
 export default function App() {
   const [dropped, setDropped] = useState(false);
+  const [currentComponent, setCurrentComponent] =
+    useState<DraggableStateComponent>({});
+  const [previousComponents, setPreviousComponents] = useState<
+    DraggableStateComponent[]
+  >([]);
+  const [savedComponents, setSavedComponents] = useState<
+    DraggableStateComponent[]
+  >([]);
   const [componentFinished, incComponentFinished] = useState(0);
   const [jsxStr, setJsxStr] = useState("");
-  const [draggableComponents, setDraggableComponents] = useState<
-    Record<string, React.ReactElement>
-  >({});
   const [droppedComponents, setDroppedComponents] = useState<
     Record<string, React.ReactElement>
   >({});
-  const draggableComponentsLength = Object.keys(draggableComponents).length;
   const droppedComponentsLength = Object.keys(droppedComponents).length;
   useEffect(() => {
-    if (draggableComponentsLength < 1 && droppedComponentsLength < 1) {
+    if (droppedComponentsLength < 1) {
       setDropped(false);
     }
-  }, [draggableComponentsLength, droppedComponentsLength]);
-  // useEffect(() => {
-  //   const loadFiles = async () => {
-  //     const files = await readGenFiles();
-  //     for (let file of files) {
-  //       if (file === ".keep") continue;
-  //       console.log({ file }, `@/components/gen/${file}`);
-  //       const Component = lazy(() => import(`../../components/gen/${file}abc`));
-  //       const key = `draggable-${file}`;
-  //       console.log({ Component });
-  //       // await sleep(400);
-  //       const draggableMarkup = (
-  //         <Draggable key={key} id={key}>
-  //           <Component />
-  //         </Draggable>
-  //       );
-  //       setDraggableComponents((draggableComponents) =>
-  //         Object.assign({}, draggableComponents, { [key]: draggableMarkup })
-  //       );
-  //     }
-  //   };
-  //   loadFiles();
-  // }, [componentFinished]);
-  // console.log(Object.values(droppedComponents), { droppedComponents });
+  }, [droppedComponentsLength]);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-12">
-      <QueryInput
-        onSubmit={(query) => console.log(query)}
-        onFinished={(jsx: string) => {
-          setJsxStr(jsx);
-          // incComponentFinished((v) => v + 1);
-        }}
-      />
-      <div className="flex flex-col flex-1 z-10 w-full text-sm">
-        <DndContext onDragEnd={handleDragEnd}>
-          <div className="h-auto min-h-20 flex items-center justify-center p-6 *:w-full my-6 w-[800px] bg-lines-45 m-auto">
-            {jsxStr && <JsxParser jsx={jsxStr} />}
-            {draggableComponentsLength > 0
-              ? [Object.values(draggableComponents)]
-              : null}
+    <div className="flex flex-col items-center justify-between bg-primary-foreground">
+      <div className="flex min-w-full">
+        {/* <div className="inventory flex min-h-screen bg-slate-400 min-w-[320px]">
+          <div className="p-2 font-semibold">Inventory</div>
+          <div id="inventory-items"></div>
+        </div> */}
+        <div className="flex flex-col flex-1 z-10 w-full text-sm px-6">
+          <div className="flex flex-col fixed bottom-0 left-0 w-full justify-center items-center">
+            <div className="w-7xl flex items-center p-12">
+              <p className="w-16 mr-4">Build me:</p>
+              <QueryInput
+                onSubmit={(query) => console.log(query)}
+                onFinished={(jsx: string) => {
+                  setJsxStr(jsx);
+                  setCurrentComponent({ jsx, id: nanoid() });
+                }}
+              />
+            </div>
           </div>
-          <Droppable key="draggable" id="draggable" dropped={dropped}>
-            {!dropped ? (
-              <span>Drop here</span>
-            ) : (
-              <>{[Object.values(droppedComponents)]}</>
-            )}
-          </Droppable>
-        </DndContext>
+          <DndContext onDragEnd={handleDragEnd}>
+            <div className="h-auto min-h-20 flex items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm">
+              {currentComponent.jsx ? (
+                <Draggable key="draggable" id="draggable">
+                  <JsxParser
+                    allowUnknownElements={true}
+                    onError={console.log}
+                    renderInWrapper={false}
+                    jsx={currentComponent.jsx}
+                  />
+                </Draggable>
+              ) : (
+                <Puzzle
+                  color="text-slate-100"
+                  className="fill-sidebar-border"
+                />
+              )}
+            </div>
+            <Droppable key="droppable" id="droppable" dropped={dropped}>
+              {previousComponents.length
+                ? previousComponents.map((previousComponent, i) => {
+                    return (
+                      <Draggable
+                        key={previousComponent.id}
+                        id={previousComponent.id as string}
+                      >
+                        <JsxParser
+                          key={i}
+                          renderInWrapper={false}
+                          jsx={previousComponent.jsx}
+                        />
+                      </Draggable>
+                    );
+                  })
+                : null}
+            </Droppable>
+          </DndContext>
+        </div>
       </div>
-    </main>
+    </div>
   );
 
   function handleDragEnd(event: { over: any; active: any }) {
-    console.log(event);
     const overId = event.over?.id;
     const activeId = event.active?.id;
-    console.log({ overId });
-    if (overId === "draggable") {
-      setDropped(true);
-    }
-    if (activeId) {
-      const dropped = Object.assign(
-        {},
-        droppedComponents,
-        pick([activeId], draggableComponents)
+    console.log({
+      overId,
+      activeId,
+      previousComponents: previousComponents.map((c) => c.id),
+    });
+    if (overId === "droppable") {
+      setPreviousComponents((previousComponents) => [
+        ...previousComponents,
+        { jsx: currentComponent.jsx, id: currentComponent.id },
+      ]);
+      setCurrentComponent({});
+    } else if (!overId) {
+      setPreviousComponents(
+        previousComponents.filter((comp) => comp.id != activeId)
       );
-      setDroppedComponents(dropped);
-      setDraggableComponents(omit([activeId], draggableComponents));
     }
-    //   if (event.active?.id && event.active.id.startsWith("draggable-")) {
-    //     const id = nanoid();
-    //     setDraggableComponents([
-    //       ...draggableComponents,
-    //       <Draggable key={id} id={id}>
-    //         Drag me
-    //       </Draggable>,
-    //     ]);
-    //   }
-    //   if (parent && !over && event?.active?.id) {
-    //     setDraggableComponents(
-    //       draggableComponents.filter((c) => c.key !== event.active.id)
-    //     );
-    //   } else if (!parent && over) {
-    //     setParent(over?.id ? over.id : null);
-    //   }
-    // }
   }
 }
