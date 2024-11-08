@@ -149,13 +149,6 @@
   }
 }
 
-.droppable {
-  background-image:
-    linear-gradient(to right, #eaeaea 1px, transparent 1px),
-    linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
-  background-size: 32px 32px;
-  background-color: #fafaf1;
-}
 
 @layer base {
   :root {
@@ -168,28 +161,33 @@
         white 2px
       );
     }
+    .droppable {
+      background-image:
+        linear-gradient(to right, #eaeaea 1px, transparent 1px),
+        linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
+      background-size: 32px 32px;
+      background-color: #fafaf1;
+    }
   }
   .dark {
     .bg-lines-45 {
       background-image: repeating-linear-gradient(
         45deg, 
-        #1ff0f0,
-        #1cfcec 1px, 
-        black 1px, 
-        black 2px
+        #1e1e1e,
+        #1e1e1e 1px, 
+        black 3px, 
+        black 4px
       );
+    }
+    .droppable {
+      background-image:
+        linear-gradient(to right, #1a1616 1px, transparent 1px),
+        linear-gradient(to bottom, #1a1616, transparent 1px);
+      background-size: 32px 32px;
+      background-color: #0a0a08;
     }
   }
 }
-
-.pick-up {
-  /* transition: transform 0.55s ease; */
-  /* display: inline-block; */
-}
-
-/* .pick-up:hover {
-  transform: translateY(-2px) scale(1.005);
-} */
 
 textarea::-webkit-scrollbar {
   display: none;

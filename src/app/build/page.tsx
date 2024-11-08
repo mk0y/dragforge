@@ -2,6 +2,7 @@
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
+import { cn } from "@/lib/utils";
 import { DndContext } from "@dnd-kit/core";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
@@ -39,13 +40,13 @@ export default function App() {
     }
   }, [droppedComponentsLength]);
   return (
-    <div className="flex flex-col items-center justify-between bg-primary-foreground">
-      <div className="flex min-w-full">
+    <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
+      <div className="flex min-w-full h-full">
         {/* <div className="inventory flex min-h-screen bg-slate-400 min-w-[320px]">
           <div className="p-2 font-semibold">Inventory</div>
           <div id="inventory-items"></div>
         </div> */}
-        <div className="flex flex-col flex-1 z-10 w-full text-sm px-6">
+        <div className="flex flex-col flex-1 z-10 w-full h-full text-sm px-6">
           <div className="flex flex-col fixed bottom-0 left-0 w-full justify-center items-center">
             <div className="w-7xl flex items-center p-12">
               <p className="w-16 mr-4">Build me:</p>
@@ -59,7 +60,12 @@ export default function App() {
             </div>
           </div>
           <DndContext onDragEnd={handleDragEnd}>
-            <div className="h-auto min-h-20 flex items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm">
+            <div
+              className={cn(
+                `h-auto min-h-20 flex flex-0 items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm`,
+                currentComponent.jsx ?? "justify-center"
+              )}
+            >
               {currentComponent.jsx ? (
                 <Draggable key="draggable" id="draggable">
                   <JsxParser
@@ -71,6 +77,7 @@ export default function App() {
                 </Draggable>
               ) : (
                 <Puzzle
+                  size={36}
                   color="text-slate-100"
                   className="fill-sidebar-border"
                 />
