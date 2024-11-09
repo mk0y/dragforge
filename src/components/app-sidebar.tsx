@@ -5,6 +5,7 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
+import Droppable from "./ui/droppable";
 
 export function AppSidebar() {
   return (
@@ -13,7 +14,13 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Inventory</SidebarGroupLabel>
           <SidebarGroupContent>
-            <div>Items...</div>
+            <Droppable
+              key="droppable-inventory"
+              id="droppable-inventory"
+              dropped={false}
+            >
+              <div className="h-[420px]">Items...</div>
+            </Droppable>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

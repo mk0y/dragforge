@@ -26,7 +26,8 @@
     "react-grid-layout": "^1.4.4",
     "react-jsx-parser": "^2.2.0",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.8",

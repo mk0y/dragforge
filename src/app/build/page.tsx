@@ -2,8 +2,8 @@
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
+import { useStore } from "@/hooks/store";
 import { cn } from "@/lib/utils";
-import { DndContext } from "@dnd-kit/core";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
@@ -20,6 +20,8 @@ interface DraggableStateComponent {
 
 export default function App() {
   const [dropped, setDropped] = useState(false);
+  const dndId = useStore((state) => state.dndId);
+  console.log({ dndId });
   const [currentComponent, setCurrentComponent] =
     useState<DraggableStateComponent>({});
   const [previousComponents, setPreviousComponents] = useState<
@@ -59,49 +61,47 @@ export default function App() {
               />
             </div>
           </div>
-          <DndContext onDragEnd={handleDragEnd}>
-            <div
-              className={cn(
-                `h-auto min-h-20 flex flex-0 items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm`,
-                currentComponent.jsx ?? "justify-center"
-              )}
-            >
-              {currentComponent.jsx ? (
-                <Draggable key="draggable" id="draggable">
-                  <JsxParser
-                    allowUnknownElements={true}
-                    onError={console.log}
-                    renderInWrapper={false}
-                    jsx={currentComponent.jsx}
-                  />
-                </Draggable>
-              ) : (
-                <Puzzle
-                  size={36}
-                  color="text-slate-100"
-                  className="fill-sidebar-border"
+          <div
+            className={cn(
+              `h-auto min-h-20 flex flex-0 items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm`,
+              currentComponent.jsx ? "justify-start" : "justify-center"
+            )}
+          >
+            {currentComponent.jsx ? (
+              <Draggable key="draggable" id="draggable">
+                <JsxParser
+                  allowUnknownElements={true}
+                  onError={console.log}
+                  renderInWrapper={false}
+                  jsx={currentComponent.jsx}
                 />
-              )}
-            </div>
-            <Droppable key="droppable" id="droppable" dropped={dropped}>
-              {previousComponents.length
-                ? previousComponents.map((previousComponent, i) => {
-                    return (
-                      <Draggable
-                        key={previousComponent.id}
-                        id={previousComponent.id as string}
-                      >
-                        <JsxParser
-                          key={i}
-                          renderInWrapper={false}
-                          jsx={previousComponent.jsx}
-                        />
-                      </Draggable>
-                    );
-                  })
-                : null}
-            </Droppable>
-          </DndContext>
+              </Draggable>
+            ) : (
+              <Puzzle
+                size={36}
+                color="text-slate-100"
+                className="fill-sidebar-border"
+              />
+            )}
+          </div>
+          <Droppable key="droppable" id="droppable" dropped={dropped}>
+            {previousComponents.length
+              ? previousComponents.map((previousComponent, i) => {
+                  return (
+                    <Draggable
+                      key={previousComponent.id}
+                      id={previousComponent.id as string}
+                    >
+                      <JsxParser
+                        key={i}
+                        renderInWrapper={false}
+                        jsx={previousComponent.jsx}
+                      />
+                    </Draggable>
+                  );
+                })
+              : null}
+          </Droppable>
         </div>
       </div>
     </div>

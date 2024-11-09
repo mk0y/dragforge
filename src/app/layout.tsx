@@ -1,3 +1,4 @@
+import AppDnd from "@/components/app-dnd";
 import { AppSidebar } from "@/components/app-sidebar";
 import ModeSwitch from "@/components/mode-switch";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -28,14 +29,20 @@ export default function RootLayout({
         )}
       >
         <SidebarProvider>
-          <AppSidebar />
-          <main className="w-full flex flex-col flex-1">
-            <div className="flex flex-0 justify-between px-6 py-2 items-center">
-              <SidebarTrigger size="icon" variant="secondary" className="rounded-full w-9 h-9" />
-              <ModeSwitch />
-            </div>
-            {children}
-          </main>
+          <AppDnd>
+            <AppSidebar />
+            <main className="w-full flex flex-col flex-1">
+              <div className="flex flex-0 justify-between px-6 py-2 items-center">
+                <SidebarTrigger
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full w-9 h-9"
+                />
+                <ModeSwitch />
+              </div>
+              {children}
+            </main>
+          </AppDnd>
         </SidebarProvider>
         <Script src="https://cdn.tailwindcss.com" />
       </body>
