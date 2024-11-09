@@ -5,22 +5,16 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar";
-import Droppable from "./ui/droppable";
+import InventoryItems from "./inventory-items";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="flex-1">
           <SidebarGroupLabel>Inventory</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <Droppable
-              key="droppable-inventory"
-              id="droppable-inventory"
-              dropped={false}
-            >
-              <div className="h-[420px]">Items...</div>
-            </Droppable>
+          <SidebarGroupContent className="h-full bg-slate-700 flex flex-1">
+            <InventoryItems />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

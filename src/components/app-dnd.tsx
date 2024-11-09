@@ -1,19 +1,35 @@
 "use client";
 import { useStore } from "@/hooks/store";
 import { DndContext } from "@dnd-kit/core";
+import { useCallback } from "react";
 
 const AppDnd = ({ children }: { children: React.ReactNode }) => {
-  const updateDnd = useStore((state) => state.updateDnd);
-  function end(event: { over: any; active: any }) {
-    const overId2 = event.over?.id;
-    const activeId2 = event.active?.id;
+  const {
+    droppedComponents,
+    storedComponents,
+    addDroppedComponent,
+    setCurrentComponent,
+    removeByIdDroppedComponent,
+    addStoredComponent,
+  } = useStore((state) => state);
+  const dragEnd = useCallback((event: { over: any; active: any }) => {
+    const overId = event.over?.id;
+    const activeId = event.active?.id;
     console.log({
-      overId2,
-      activeId2,
+      overId,
+      activeId,
+      previousComponents: droppedComponents?.map((c) => c.id),
     });
-    updateDnd(overId2);
-  }
-  return <DndContext onDragEnd={end}>{children}</DndContext>;
+    if (overId === "droppable") {
+      addDroppedComponent();
+      setCurrentComponent({});
+    } else if (overId === "droppable-inventory") {
+      addStoredComponent(activeId);
+    } else if (!overId) {
+      removeByIdDroppedComponent(activeId);
+    }
+  }, []);
+  return <DndContext onDragEnd={dragEnd}>{children}</DndContext>;
 };
 
 export default AppDnd;
