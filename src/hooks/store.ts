@@ -1,4 +1,6 @@
+import { nanoid } from "nanoid";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface DraggableStateComponent {
   id?: string;
@@ -17,44 +19,57 @@ interface State {
   addStoredComponent: (id: string) => void;
 }
 
-export const useStore = create<State>()((set) => ({
-  dndId: "",
-  currentComponent: undefined,
-  droppedComponents: undefined,
-  storedComponents: undefined,
-  updateDnd: (dndId: string) => set({ dndId }),
-  setCurrentComponent: (c: DraggableStateComponent) =>
-    set((state) => {
-      return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
+export const useStore = create<State>()(
+  persist(
+    (set) => ({
+      dndId: "",
+      currentComponent: undefined,
+      droppedComponents: undefined,
+      storedComponents: undefined,
+      updateDnd: (dndId: string) => set({ dndId }),
+      setCurrentComponent: (c: DraggableStateComponent) =>
+        set((state) => {
+          return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
+        }),
+      addDroppedComponent: () =>
+        set((state) => {
+          return {
+            ...state,
+            droppedComponents: [
+              ...(state.droppedComponents || []),
+              {
+                jsx: state.currentComponent?.jsx,
+                id: state.currentComponent?.id,
+              },
+            ],
+          };
+        }),
+      removeByIdDroppedComponent: (activeId) =>
+        set((state) => {
+          return {
+            ...state,
+            droppedComponents: state.droppedComponents?.filter(
+              (c) => c.id != activeId
+            ),
+          };
+        }),
+      addStoredComponent: (activeId: string) =>
+        set((state) => {
+          const c = state.droppedComponents?.find((c) => c.id == activeId);
+          return {
+            ...state,
+            storedComponents: [
+              ...(state.storedComponents || []),
+              { jsx: c?.jsx, id: nanoid() },
+            ],
+          };
+        }),
     }),
-  addDroppedComponent: () =>
-    set((state) => {
-      return {
-        ...state,
-        droppedComponents: [
-          ...(state.droppedComponents || []),
-          { jsx: state.currentComponent?.jsx, id: state.currentComponent?.id },
-        ],
-      };
-    }),
-  removeByIdDroppedComponent: (activeId) =>
-    set((state) => {
-      return {
-        ...state,
-        droppedComponents: state.droppedComponents?.filter(
-          (c) => c.id != activeId
-        ),
-      };
-    }),
-  addStoredComponent: (activeId: string) =>
-    set((state) => {
-      const c = state.droppedComponents?.find((c) => c.id == activeId);
-      return {
-        ...state,
-        storedComponents: [
-          ...(state.storedComponents || []),
-          { jsx: c?.jsx, id: c?.id },
-        ],
-      };
-    }),
-}));
+    {
+      name: "inventory-items",
+      partialize: (state) => ({
+        storedComponents: state.storedComponents || [],
+      }),
+    }
+  )
+);

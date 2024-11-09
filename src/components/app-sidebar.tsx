@@ -13,7 +13,7 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup className="flex-1">
           <SidebarGroupLabel>Inventory</SidebarGroupLabel>
-          <SidebarGroupContent className="h-full bg-slate-700 flex flex-1">
+          <SidebarGroupContent className="h-full bg-slate-700 flex flex-1 flex-col">
             <InventoryItems />
           </SidebarGroupContent>
         </SidebarGroup>

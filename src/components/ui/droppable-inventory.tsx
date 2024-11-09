@@ -21,7 +21,7 @@ export default function Droppable(props: {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "droppable flex flex-1 h-full w-full shadow-md",
+        "flex flex-1 flex-col h-full w-full shadow-inner bg-neutral-950",
         !props.dropped && "items-start justify-start",
         props.dropped && "flex-col"
       )}
