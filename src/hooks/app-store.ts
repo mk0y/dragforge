@@ -1,3 +1,4 @@
+"use client";
 import { nanoid } from "nanoid";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -7,7 +8,7 @@ interface DraggableStateComponent {
   jsx?: string;
 }
 
-interface State {
+export interface AppState {
   dndId: string;
   currentComponent?: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
@@ -19,7 +20,7 @@ interface State {
   addStoredComponent: (id: string) => void;
 }
 
-export const useStore = create<State>()(
+export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
       dndId: "",

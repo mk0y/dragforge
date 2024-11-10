@@ -2,16 +2,15 @@
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
-import { useStore } from "@/hooks/store";
+import { useAppStore } from "@/hooks/app-store";
+import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
 import JsxParser from "react-jsx-parser";
 
 export default function App() {
-  const { currentComponent, droppedComponents, setCurrentComponent } = useStore(
-    (state) => state
-  );
+  const appState = useStore(useAppStore, (state) => state);
   return (
     <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
       <div className="flex min-w-full h-full">
@@ -22,7 +21,7 @@ export default function App() {
               <QueryInput
                 onSubmit={(query) => console.log(query)}
                 onFinished={(jsx: string) => {
-                  setCurrentComponent({ jsx, id: nanoid() });
+                  appState?.setCurrentComponent({ jsx, id: nanoid() });
                 }}
               />
             </div>
@@ -30,16 +29,18 @@ export default function App() {
           <div
             className={cn(
               `h-auto min-h-20 flex flex-0 items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm`,
-              currentComponent?.jsx ? "justify-start" : "justify-center"
+              appState?.currentComponent?.jsx
+                ? "justify-start"
+                : "justify-center"
             )}
           >
-            {currentComponent?.jsx ? (
+            {appState?.currentComponent?.jsx ? (
               <Draggable key="draggable" id="draggable">
                 <JsxParser
                   allowUnknownElements={true}
                   onError={console.log}
                   renderInWrapper={false}
-                  jsx={currentComponent.jsx}
+                  jsx={appState?.currentComponent.jsx}
                 />
               </Draggable>
             ) : (
@@ -51,8 +52,8 @@ export default function App() {
             )}
           </div>
           <Droppable key="droppable" id="droppable" dropped={false}>
-            {droppedComponents?.length
-              ? droppedComponents.map((c, i) => {
+            {appState?.droppedComponents?.length
+              ? appState?.droppedComponents.map((c, i) => {
                   return (
                     <Draggable key={c.id} id={c.id as string}>
                       <JsxParser key={i} renderInWrapper={false} jsx={c.jsx} />

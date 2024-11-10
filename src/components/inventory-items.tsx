@@ -1,11 +1,15 @@
 "use client";
-import { useStore } from "@/hooks/store";
+import { useAppStore } from "@/hooks/app-store";
+import { useStore } from "@/hooks/use-store";
 import JsxParser from "react-jsx-parser";
 import Draggable from "./ui/draggable";
 import DroppableInventory from "./ui/droppable-inventory";
 
 const InventoryItems = () => {
-  const { storedComponents } = useStore((state) => state);
+  const storedComponents = useStore(
+    useAppStore,
+    (state) => state.storedComponents
+  );
   return (
     <DroppableInventory
       key="droppable-inventory"
