@@ -1,4 +1,5 @@
 "use client";
+import { Input } from "@/components/palette/Input";
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
 import Droppable from "@/components/ui/droppable";
@@ -7,10 +8,15 @@ import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
+import { useCallback, useState } from "react";
 import JsxParser from "react-jsx-parser";
 
 export default function App() {
   const appState = useStore(useAppStore, (state) => state);
+  const [inputValue, setInputValue] = useState("");
+  const onInputChange = useCallback((e: { current: { value: string } }) => {
+    setInputValue(e.current.value);
+  }, []);
   return (
     <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
       <div className="flex min-w-full h-full">
@@ -37,9 +43,16 @@ export default function App() {
             {appState?.currentComponent?.jsx ? (
               <Draggable key="draggable" id="draggable">
                 <JsxParser
+                  components={{ Input }}
+                  bindings={{
+                    value: inputValue,
+                    onChange: onInputChange,
+                  }}
+                  blacklistedAttrs={[]}
+                  showWarnings={true}
                   allowUnknownElements={true}
                   onError={console.log}
-                  renderInWrapper={false}
+                  renderInWrapper={true}
                   jsx={appState?.currentComponent.jsx}
                 />
               </Draggable>
