@@ -1,39 +1,23 @@
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
+  SidebarHeader,
 } from "@/components/ui/sidebar";
-import { DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-import { Ellipsis } from "lucide-react";
 import InventoryItems from "./inventory-items";
+import ClearInventory from "./ui/clear-inventory";
 
 export function AppSidebar() {
   return (
     <Sidebar variant="floating">
       <SidebarContent className="overflow-visible">
+        <div className="flex justify-between p-2">
+          <SidebarHeader>Inventory</SidebarHeader>
+          <ClearInventory />
+        </div>
         <SidebarGroup className="flex-1">
-          <div className="flex justify-between">
-            <SidebarGroupLabel>Inventory</SidebarGroupLabel>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Ellipsis className="rounded-full" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Inventory</DropdownMenuLabel>
-                <DropdownMenuItem>
-                  <span>Clear the Inventory</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <div className="flex justify-between"></div>
           <SidebarGroupContent className="h-full bg-slate-700 flex flex-1 flex-col">
             <InventoryItems />
           </SidebarGroupContent>

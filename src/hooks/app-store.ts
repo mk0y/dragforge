@@ -18,6 +18,7 @@ export interface AppState {
   addDroppedComponent: () => void;
   removeByIdDroppedComponent: (id: string) => void;
   addStoredComponent: (id: string) => void;
+  clearInventory: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -64,6 +65,10 @@ export const useAppStore = create<AppState>()(
               { jsx: c?.jsx, id: nanoid() },
             ],
           };
+        }),
+      clearInventory: () =>
+        set((state) => {
+          return { ...state, storedComponents: [] };
         }),
     }),
     {
