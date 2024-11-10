@@ -10,7 +10,7 @@ import ClearInventory from "./ui/clear-inventory";
 
 export function AppSidebar() {
   return (
-    <Sidebar variant="floating">
+    <Sidebar variant="floating" className="pr-0">
       <SidebarContent className="overflow-visible">
         <div className="flex justify-between p-2">
           <SidebarHeader>Inventory</SidebarHeader>

@@ -33,15 +33,11 @@ export const assembleComponentsUsingGPT_Completion = async (
   query: string,
   componentStr: string
 ) => {
-  const chatCompletion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content: `You act as a senior frontend React developer.
+  const prompt = `You act as a senior frontend React developer.
 No explanations needed since I'm also a developer and I will understand the code.
 You will only use the following components to fulfil the user's request:
 
-Button component:
+Component's tsx file:
 
 \`\`\`tsx
 ${componentStr}
@@ -54,7 +50,13 @@ You should produce for example: \`<Button size="small" className="bg-green-700 r
 The purpose of this task is for users to have appealing components production ready to be used in their projects.
 Always try to use animations and shadows where applicable to have modern look and feel.
 Take all the instructions into consideration, don't omit anything, like paddings, colors, borders, everything that is requested must be included for styling. Think twice.
-Don't wrap the component with \`\`\`tsx.`,
+Don't wrap the component with \`\`\`tsx.`;
+  console.log({ prompt });
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content: prompt,
       },
       {
         role: "user",

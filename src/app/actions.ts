@@ -22,13 +22,13 @@ export const askGPTWhichComponentsToUse = async (query: string) => {
   const componentNames = componentsCommaStr?.split(",").map((s) => s.trim());
   console.log({ componentNames });
   if (componentNames && componentNames[0]) {
-    const buttonStr = fs.readFileSync(
+    const componentStr = fs.readFileSync(
       `src/components/palette/${componentNames[0]}.tsx`,
       "utf-8"
     );
     const { content } = await assembleComponentsUsingGPT_Completion(
       query,
-      buttonStr
+      componentStr
     );
     console.log({ content });
     return { content };
