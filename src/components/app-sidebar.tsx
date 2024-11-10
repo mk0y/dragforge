@@ -18,7 +18,7 @@ import InventoryItems from "./inventory-items";
 export function AppSidebar() {
   return (
     <Sidebar variant="floating">
-      <SidebarContent>
+      <SidebarContent className="overflow-visible">
         <SidebarGroup className="flex-1">
           <div className="flex justify-between">
             <SidebarGroupLabel>Inventory</SidebarGroupLabel>
@@ -34,7 +34,7 @@ export function AppSidebar() {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <SidebarGroupContent className="h-full bg-slate-700 flex flex-1 flex-col overflow-hidden">
+          <SidebarGroupContent className="h-full bg-slate-700 flex flex-1 flex-col">
             <InventoryItems />
           </SidebarGroupContent>
         </SidebarGroup>

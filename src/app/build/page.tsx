@@ -14,7 +14,7 @@ export default function App() {
   return (
     <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
       <div className="flex min-w-full h-full">
-        <div className="flex flex-col flex-1 z-10 w-full h-full text-sm px-6">
+        <div className="flex flex-col flex-1 w-full h-full text-sm px-6">
           <div className="flex flex-col fixed bottom-0 left-0 w-full justify-center items-center">
             <div className="w-7xl flex items-center p-12">
               <p className="w-16 mr-4">Build me:</p>
