@@ -15,14 +15,10 @@ export default function Draggable(props: {
     transform: CSS.Translate.toString(transform),
   };
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="relative z-20 group"
-    >
+    <div ref={setNodeRef} style={style} className="relative z-20 group/item">
       <GripVertical
         size="16"
-        className="absolute cursor-move right-0 top-0 bg-transparent opacity-0 group-hover:opacity-100 transition-opacity outline-none"
+        className="absolute cursor-move -right-3 top-0 bg-transparent opacity-0 group-hover/item:opacity-100 transition-opacity outline-none"
         {...listeners}
         {...attributes}
       />

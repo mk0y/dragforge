@@ -19,7 +19,10 @@ const InventoryItems = () => {
       {storedComponents?.length
         ? storedComponents.map((c, i) => {
             return (
-              <div key={i} className="stored-component border-b border-primary-foreground border-dashed p-2 w-full">
+              <div
+                key={i}
+                className="stored-component border-b border-primary-foreground border-dashed p-2 w-full"
+              >
                 <DraggableInventory id={c.id as string}>
                   <JsxParser key={i} renderInWrapper={false} jsx={c.jsx} />
                 </DraggableInventory>

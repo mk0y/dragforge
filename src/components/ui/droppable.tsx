@@ -12,12 +12,18 @@ export default function Droppable(props: {
   const [dragStarted, setDragStarted] = useState(false);
   useDndMonitor({
     onDragStart: (e) => {
-      if (e.active.id == "draggable") {
+      if (
+        e.active.id == "draggable" ||
+        e.active.id.toString().startsWith("inv-")
+      ) {
         setDragStarted(true);
       }
     },
     onDragEnd: (e) => {
-      if (e.active.id == "draggable") {
+      if (
+        e.active.id == "draggable" ||
+        e.active.id.toString().startsWith("inv-")
+      ) {
         setDragStarted(false);
       }
     },
@@ -32,7 +38,8 @@ export default function Droppable(props: {
         "droppable flex flex-1 h-full w-full shadow-md border border-transparent",
         !props.dropped && "items-start justify-start",
         props.dropped && "flex-col",
-        dragStarted && "opacity-55 transition-opacity border border-dashed border-secondary-foreground"
+        dragStarted &&
+          "opacity-55 transition-opacity border border-dashed border-secondary-foreground"
       )}
     >
       {props.children}

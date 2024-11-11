@@ -31,7 +31,7 @@ export const useAppStore = create<AppState>()(
         }),
       addDroppedComponent: (activeId?: string) =>
         set((state) => {
-          if (activeId) {
+          if (activeId) { // from inventory
             const c = state.storedComponents?.find((c) => c.id == activeId);
             if (c) {
               return {
@@ -47,7 +47,7 @@ export const useAppStore = create<AppState>()(
             } else {
               return state;
             }
-          } else {
+          } else { // from placeholder
             return {
               ...state,
               droppedComponents: [
@@ -81,7 +81,7 @@ export const useAppStore = create<AppState>()(
               ...state,
               storedComponents: [
                 ...(state.storedComponents || []),
-                { jsx: c.jsx, id: nanoid() },
+                { jsx: c.jsx, id: `inv-${nanoid()}` },
               ],
             };
           } else {

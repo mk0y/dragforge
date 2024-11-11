@@ -12,12 +12,18 @@ export default function Droppable(props: {
   const [dragStarted, setDragStarted] = useState(false);
   useDndMonitor({
     onDragStart: (e) => {
-      if (e.active.id != "draggable" && e.active.id) {
+      if (
+        e.active.id != "draggable" &&
+        !e.active.id.toString().startsWith("inv-")
+      ) {
         setDragStarted(true);
       }
     },
     onDragEnd: (e) => {
-      if (e.active.id != "draggable" && e.active.id) {
+      if (
+        e.active.id != "draggable" &&
+        !e.active.id.toString().startsWith("inv-")
+      ) {
         setDragStarted(false);
       }
     },

@@ -2,6 +2,7 @@
 import { Input } from "@/components/palette/Input";
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
+import DraggableCanvas from "@/components/ui/draggable-canvas";
 import Droppable from "@/components/ui/droppable";
 import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
@@ -59,9 +60,9 @@ export default function App() {
             {appState?.droppedComponents?.length
               ? appState?.droppedComponents.map((c, i) => {
                   return (
-                    <Draggable key={c.id} id={c.id as string}>
+                    <DraggableCanvas key={c.id} id={c.id as string}>
                       <JsxParser key={i} renderInWrapper={false} jsx={c.jsx} />
-                    </Draggable>
+                    </DraggableCanvas>
                   );
                 })
               : null}
