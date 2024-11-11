@@ -44,10 +44,6 @@ export default function App() {
               <Draggable key="draggable" id="draggable">
                 <JsxParser
                   components={{ Input }}
-                  bindings={{
-                    value: inputValue,
-                    onChange: onInputChange,
-                  }}
                   blacklistedAttrs={[]}
                   showWarnings={true}
                   allowUnknownElements={true}

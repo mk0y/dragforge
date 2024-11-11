@@ -1,6 +1,7 @@
 "use client";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
+import { GripVertical } from "lucide-react";
 import React from "react";
 
 export default function Draggable(props: {
@@ -14,7 +15,17 @@ export default function Draggable(props: {
     transform: CSS.Translate.toString(transform),
   };
   return (
-    <div ref={setNodeRef} {...listeners} {...attributes} style={style} className="z-20">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative z-20 group"
+    >
+      <GripVertical
+        size="16"
+        className="absolute cursor-move -right-5 top-0 bg-transparent opacity-20 group-hover:opacity-100 transition-opacity outline-none"
+        {...listeners}
+        {...attributes}
+      />
       {props.children}
     </div>
   );
