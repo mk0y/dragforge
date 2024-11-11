@@ -1,29 +1,38 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useDroppable } from "@dnd-kit/core";
-import React from "react";
+import { useDndMonitor, useDroppable } from "@dnd-kit/core";
+import React, { useState } from "react";
 
 export default function Droppable(props: {
   id: string;
   children: React.ReactNode;
   dropped: boolean;
 }) {
+  const [dragStarted, setDragStarted] = useState(false);
+  useDndMonitor({
+    onDragStart: (e) => {
+      if (e.active.id != "draggable" && e.active.id) {
+        setDragStarted(true);
+      }
+    },
+    onDragEnd: (e) => {
+      if (e.active.id != "draggable" && e.active.id) {
+        setDragStarted(false);
+      }
+    },
+  });
   const { isOver, setNodeRef } = useDroppable({
     id: props.id,
   });
-  const style = {
-    color: isOver ? "green" : undefined,
-  };
-
   return (
     <div
       ref={setNodeRef}
-      style={style}
       className={cn(
-        "flex flex-1 flex-col h-full w-full shadow-inner bg-neutral-950",
+        "droppable-inventory flex flex-1 flex-col h-full w-full shadow-inner bg-neutral-950 border border-transparent",
         !props.dropped && "items-start justify-start",
-        props.dropped && "flex-col"
+        props.dropped && "flex-col",
+        dragStarted && "border-dashed border-secondary-foreground"
       )}
     >
       {props.children}

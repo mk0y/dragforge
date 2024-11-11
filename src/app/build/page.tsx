@@ -8,20 +8,15 @@ import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
-import { useCallback, useState } from "react";
 import JsxParser from "react-jsx-parser";
 
 export default function App() {
   const appState = useStore(useAppStore, (state) => state);
-  const [inputValue, setInputValue] = useState("");
-  const onInputChange = useCallback((e: { current: { value: string } }) => {
-    setInputValue(e.current.value);
-  }, []);
   return (
     <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
       <div className="flex min-w-full h-full">
         <div className="flex flex-col flex-1 w-full h-full text-sm px-6">
-          <div className="flex flex-col fixed bottom-0 left-0 w-full justify-center items-center">
+          <div className="query-input flex flex-col fixed bottom-0 left-0 w-full justify-center z-10 items-center">
             <div className="w-7xl flex items-center p-12">
               <p className="w-16 mr-4">Build me:</p>
               <QueryInput

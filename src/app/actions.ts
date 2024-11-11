@@ -32,7 +32,6 @@ export const askGPTWhichComponentsToUse = async (query: string) => {
     );
     console.log({ content });
     return { content };
-    // console.log({ buttonStr });
   } else {
     return {};
   }
@@ -83,7 +82,6 @@ Don't import any CSS files.`,
     model: "gpt-4o-mini",
   });
   const content = chatCompletion.choices[0].message.content;
-  console.log({ __filename, __dirname });
   if (content) {
     const componentName = writeToFile(content);
     return { componentName };

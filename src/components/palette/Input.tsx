@@ -14,7 +14,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         value={value}
         onChange={(e) => setValue(e.target.value)}
         className={cn(
-          "border border-input bg-transparent px-3 py-1 text-base shadow-sm outline-none",
+          "border border-input bg-transparent px-3 py-1 text-base shadow-sm outline-none active:outline-none focus:outline-none focus-visible:outline-none",
           className
         )}
         ref={ref}

@@ -10,9 +10,12 @@ const AppDnd = ({ children }: { children: React.ReactNode }) => {
     (event: { over: any; active: any }) => {
       const overId = event.over?.id;
       const activeId = event.active?.id;
-      if (appState && overId === "droppable") {
+      if (appState && overId === "droppable" && activeId === "draggable") {
         appState.addDroppedComponent();
         appState.setCurrentComponent({});
+      }
+      if (appState && overId === "droppable" && activeId) {
+        appState.addDroppedComponent(activeId);
       } else if (appState && overId === "droppable-inventory") {
         appState.addStoredComponent(activeId);
       } else if (appState && !overId) {

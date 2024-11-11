@@ -51,7 +51,6 @@ The purpose of this task is for users to have appealing components production re
 Always try to use animations and shadows where applicable to have modern look and feel.
 Take all the instructions into consideration, don't omit anything, like paddings, colors, borders, everything that is requested must be included for styling. Think twice.
 Don't wrap the component with \`\`\`tsx.`;
-  console.log({ prompt });
   const chatCompletion = await openai.chat.completions.create({
     messages: [
       {

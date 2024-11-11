@@ -9,13 +9,11 @@ interface DraggableStateComponent {
 }
 
 export interface AppState {
-  dndId: string;
   currentComponent?: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
-  updateDnd: (str: string) => void;
   setCurrentComponent: (c: DraggableStateComponent) => void;
-  addDroppedComponent: () => void;
+  addDroppedComponent: (activeId?: string) => void;
   removeByIdDroppedComponent: (id: string) => void;
   addStoredComponent: (id: string) => void;
   clearInventory: () => void;
@@ -24,47 +22,71 @@ export interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      dndId: "",
       currentComponent: undefined,
       droppedComponents: undefined,
       storedComponents: undefined,
-      updateDnd: (dndId: string) => set({ dndId }),
       setCurrentComponent: (c: DraggableStateComponent) =>
         set((state) => {
           return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
         }),
-      addDroppedComponent: () =>
+      addDroppedComponent: (activeId?: string) =>
         set((state) => {
-          return {
-            ...state,
-            droppedComponents: [
-              ...(state.droppedComponents || []),
-              {
-                jsx: state.currentComponent?.jsx,
-                id: state.currentComponent?.id,
-              },
-            ],
-          };
+          if (activeId) {
+            const c = state.storedComponents?.find((c) => c.id == activeId);
+            if (c) {
+              return {
+                ...state,
+                droppedComponents: [
+                  ...(state.droppedComponents || []),
+                  {
+                    jsx: c.jsx,
+                    id: nanoid(),
+                  },
+                ],
+              };
+            } else {
+              return state;
+            }
+          } else {
+            return {
+              ...state,
+              droppedComponents: [
+                ...(state.droppedComponents || []),
+                {
+                  jsx: state.currentComponent?.jsx,
+                  id: nanoid(),
+                },
+              ],
+            };
+          }
         }),
       removeByIdDroppedComponent: (activeId) =>
         set((state) => {
-          return {
-            ...state,
-            droppedComponents: state.droppedComponents?.filter(
-              (c) => c.id != activeId
-            ),
-          };
+          if (state.droppedComponents) {
+            return {
+              ...state,
+              droppedComponents: state.droppedComponents.filter(
+                (c) => c.id != activeId
+              ),
+            };
+          } else {
+            return state;
+          }
         }),
       addStoredComponent: (activeId: string) =>
         set((state) => {
           const c = state.droppedComponents?.find((c) => c.id == activeId);
-          return {
-            ...state,
-            storedComponents: [
-              ...(state.storedComponents || []),
-              { jsx: c?.jsx, id: nanoid() },
-            ],
-          };
+          if (c) {
+            return {
+              ...state,
+              storedComponents: [
+                ...(state.storedComponents || []),
+                { jsx: c.jsx, id: nanoid() },
+              ],
+            };
+          } else {
+            return state;
+          }
         }),
       clearInventory: () =>
         set((state) => {
