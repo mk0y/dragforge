@@ -1,23 +1,5 @@
 "use client";
-import { Button } from "@/components/palette/Button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/palette/DropdownMenu";
-import { Input } from "@/components/palette/Input";
+import * as Palette from "@/components/palette/all-components";
 import QueryInput from "@/components/QueryInput/query-input";
 import Draggable from "@/components/ui/draggable";
 import DraggableCanvas from "@/components/ui/draggable-canvas";
@@ -28,10 +10,6 @@ import { cn } from "@/lib/utils";
 import { Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
 import JsxParser from "react-jsx-parser";
-
-const DropdownMenuRadioItemWrapper = (props: any) => (
-  <DropdownMenuRadioItem {...props} />
-);
 
 export default function App() {
   const appState = useStore(useAppStore, (state) => state);
@@ -60,25 +38,7 @@ export default function App() {
             {appState?.currentComponent?.jsx ? (
               <Draggable key="draggable" id="draggable">
                 <JsxParser
-                  components={{
-                    Button,
-                    Input,
-                    DropdownMenu,
-                    DropdownMenuTrigger,
-                    DropdownMenuContent,
-                    DropdownMenuItem,
-                    DropdownMenuCheckboxItem,
-                    DropdownMenuRadioItem: DropdownMenuRadioItemWrapper, // for some reason this one errors
-                    DropdownMenuLabel,
-                    DropdownMenuSeparator,
-                    DropdownMenuShortcut,
-                    DropdownMenuGroup,
-                    DropdownMenuPortal,
-                    DropdownMenuSub,
-                    DropdownMenuSubContent,
-                    DropdownMenuSubTrigger,
-                    DropdownMenuRadioGroup,
-                  }}
+                  components={{ ...Palette }}
                   blacklistedAttrs={[]}
                   showWarnings={true}
                   allowUnknownElements={true}
