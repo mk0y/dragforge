@@ -16,7 +16,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const askGPTWhichComponentsToUse = async (query: string) => {
+export const generateComponentFromGPT = async (query: string) => {
   const { content: componentsCommaStr } =
     await askGPTWhichComponentsToUse_Completion(query);
   const componentNames = componentsCommaStr?.split(",").map((s) => s.trim());
@@ -28,6 +28,7 @@ export const askGPTWhichComponentsToUse = async (query: string) => {
     );
     const { content } = await assembleComponentsUsingGPT_Completion(
       query,
+      componentNames[0],
       componentStr
     );
     console.log({ content });

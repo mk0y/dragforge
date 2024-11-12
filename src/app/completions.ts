@@ -12,7 +12,7 @@ export const askGPTWhichComponentsToUse_Completion = async (query: string) => {
         content: `User will ask you to build a React component.
 Based on user's request you will only return a list of components you would use for building the UI.
 Don't build the UI yet.
-We have following components which we can use: Button, Input, Select.
+We have following components which we can use: Button, Input, Select or DropdownMenu, Textarea.
 Please return just comma separated list of components you would use. For example: Button. Or Button, Input.`,
       },
       {
@@ -31,13 +31,14 @@ Please return just comma separated list of components you would use. For example
 
 export const assembleComponentsUsingGPT_Completion = async (
   query: string,
+  componentName: string,
   componentStr: string
 ) => {
   const prompt = `You act as a senior frontend React developer.
 No explanations needed since I'm also a developer and I will understand the code.
 You will only use the following components to fulfil the user's request:
 
-Component's tsx file:
+${componentName} component's tsx file:
 
 \`\`\`tsx
 ${componentStr}
