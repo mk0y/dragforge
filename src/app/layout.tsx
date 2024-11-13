@@ -1,8 +1,10 @@
 import AppDnd from "@/components/app-dnd";
 import { AppSidebar } from "@/components/app-sidebar";
 import ModeSwitch from "@/components/mode-switch";
+import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { Hand } from "lucide-react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
@@ -38,6 +40,13 @@ export default function RootLayout({
                   variant="secondary"
                   className="rounded-full w-9 h-9"
                 />
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  className="rounded-full w-9 h-9"
+                >
+                  <Hand size="14" />
+                </Button>
                 <ModeSwitch />
               </div>
               {children}

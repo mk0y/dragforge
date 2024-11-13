@@ -8,10 +8,15 @@ interface DraggableStateComponent {
   jsx?: string;
 }
 
+export interface CanvasRow {
+  height: number;
+}
+
 export interface AppState {
-  currentComponent?: DraggableStateComponent;
+  currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
+  rows: Record<string, { page: string; rows: CanvasRow[] }>;
   setCurrentComponent: (c: DraggableStateComponent) => void;
   addDroppedComponent: (activeId?: string) => void;
   removeByIdDroppedComponent: (id: string) => void;
@@ -22,16 +27,20 @@ export interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      currentComponent: undefined,
+      currentComponent: {},
       droppedComponents: undefined,
       storedComponents: undefined,
+      rows: {
+        home: { page: "Home", rows: [{ height: 120 }, { height: 120 }] },
+      },
       setCurrentComponent: (c: DraggableStateComponent) =>
         set((state) => {
           return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
         }),
       addDroppedComponent: (activeId?: string) =>
         set((state) => {
-          if (activeId) { // from inventory
+          if (activeId) {
+            // from inventory
             const c = state.storedComponents?.find((c) => c.id == activeId);
             if (c) {
               return {
@@ -47,7 +56,8 @@ export const useAppStore = create<AppState>()(
             } else {
               return state;
             }
-          } else { // from placeholder
+          } else {
+            // from placeholder
             return {
               ...state,
               droppedComponents: [

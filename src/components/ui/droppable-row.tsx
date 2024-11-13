@@ -1,14 +1,16 @@
 "use client";
-
+import { CanvasRow } from "@/hooks/app-store";
 import { cn } from "@/lib/utils";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import React, { useState } from "react";
 
-export default function Droppable(props: {
+export default function DroppableRow(props: {
   id: string;
   children: React.ReactNode;
   dropped: boolean;
+  row: CanvasRow;
 }) {
+  // const rows = useStore(useAppStore, (state) => state.rows);
   const [dragStarted, setDragStarted] = useState(false);
   useDndMonitor({
     onDragStart: (e) => {
@@ -35,7 +37,7 @@ export default function Droppable(props: {
     <div
       ref={setNodeRef}
       className={cn(
-        "droppable flex flex-1 h-full w-full shadow-md border border-transparent",
+        "droppable-row h-full w-full",
         !props.dropped && "items-start justify-start",
         props.dropped && "flex-col",
         dragStarted &&

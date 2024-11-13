@@ -96,12 +96,16 @@
         white 2px
       );
     }
-    .droppable {
+    .droppable-canvas {
       background-image:
         linear-gradient(to right, #eaeaea 1px, transparent 1px),
         linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
       background-size: 32px 32px;
       background-color: #fafaf1;
+    }
+    .canvas-resize-handle {
+      background-color: transparent !important;
+      border-bottom: 1px dashed rgba(255, 0, 0, .5);
     }
   }
   .dark {
@@ -114,12 +118,19 @@
         black 4px
       );
     }
-    .droppable {
+    .droppable-canvas {
       background-image:
         linear-gradient(to right, #1a1616 1px, transparent 1px),
         linear-gradient(to bottom, #1a1616, transparent 1px);
       background-size: 32px 32px;
       background-color: #0a0a08;
+    }
+    .canvas-resize-handle {
+      background-color: transparent !important;
+      border-bottom: 1px dashed rgba(255, 255, 255, .25);
+    }
+    .canvas-resize-handle:hover {
+      border-bottom: 1px dashed rgba(255, 255, 255, .75);
     }
   }
 }

@@ -18,7 +18,7 @@ export default function Draggable(props: {
     <div ref={setNodeRef} style={style} className="relative z-20 group/item">
       <GripVertical
         size="16"
-        className="absolute cursor-move -right-3 top-0 bg-transparent opacity-20 group-hover/item:opacity-100 transition-opacity outline-none"
+        className="absolute cursor-move -right-4 top-0 bg-transparent opacity-20 group-hover/item:opacity-100 transition-opacity outline-none"
         {...listeners}
         {...attributes}
       />

@@ -1,13 +1,13 @@
 "use client";
 import * as Palette from "@/components/palette/all-components";
 import QueryInput from "@/components/QueryInput/query-input";
+import ResizablePanels from "@/components/resizable-panels";
+import { Button } from "@/components/ui/button";
 import Draggable from "@/components/ui/draggable";
-import DraggableCanvas from "@/components/ui/draggable-canvas";
-import Droppable from "@/components/ui/droppable";
 import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
-import { Puzzle } from "lucide-react";
+import { Plus, Puzzle } from "lucide-react";
 import { nanoid } from "nanoid";
 import JsxParser from "react-jsx-parser";
 
@@ -55,17 +55,20 @@ export default function App() {
               />
             )}
           </div>
-          <Droppable key="droppable" id="droppable" dropped={false}>
-            {appState?.droppedComponents?.length
-              ? appState?.droppedComponents.map((c, i) => {
-                  return (
-                    <DraggableCanvas key={c.id} id={c.id as string}>
-                      <JsxParser key={i} renderInWrapper={false} jsx={c.jsx} />
-                    </DraggableCanvas>
-                  );
-                })
-              : null}
-          </Droppable>
+          <div className="flex flex-1 h-full w-full">
+            <div className="w-4 h-full dark:bg-secondary flex flex-0">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="dark:hover:bg-black rounded-none"
+              >
+                <Plus />
+              </Button>
+            </div>
+            <div className="droppable-canvas flex flex-1 h-full w-full shadow-md border border-transparent">
+              <ResizablePanels />
+            </div>
+          </div>
         </div>
       </div>
     </div>
