@@ -43,3 +43,10 @@ A dropdown menu to choose from following items: "Red", "Green", "Blue". Dropdown
 ```
 
 Using similar approach it's possible to use variety of different structures and styles.
+
+### Roadmap
+
+1. Remember row split position
+2. Split using absolute values (currently it's by %)
+3. Fix components glitch in inventory
+4. Split rows into columns
