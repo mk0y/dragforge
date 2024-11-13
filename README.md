@@ -50,3 +50,5 @@ Using similar approach it's possible to use variety of different structures and 
 2. Split using absolute values (currently it's by %)
 3. Fix components glitch in inventory
 4. Split rows into columns
+5. Start working on header component, without sub-menus first
+6. UX for big components, like headers, hero sections, sidebars, etc.
