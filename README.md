@@ -1,8 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dragforge
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm i
+# or
+yarn
+```
+
+Next, run the development server:
 
 ```bash
 npm run dev
@@ -16,21 +24,22 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Useful prompts:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+So far we've built support for Buttons, Inputs and DropdownMenu or Select.
 
-## Learn More
+Some useful prompts that we tested:
 
-To learn more about Next.js, take a look at the following resources:
+```
+A button with paddings and white text, with gradient background from top blue to bottom green, with 0.5rem border radius.
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+An input text field with placeholder "Hi there!", paddings, and with fully rounded borders with transparent background and weak white border colour. When it's in focus border should shine strong white with a transition effect, and no outline ring please.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+A dropdown menu to choose from following items: "Red", "Green", "Blue". Dropdown menu should have dark background and light text. It should have a separator line between the items. Each item's on hover background should lean towards to color that matches its name, e.g. red for "Red".
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Using similar approach it's possible to use variety of different structures and styles.
