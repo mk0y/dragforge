@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import React, { useState } from "react";
 
-export default function DroppableRow(props: {
+export default function DroppablePanel(props: {
   id: string;
   children: React.ReactNode;
   dropped: boolean;
@@ -16,6 +16,7 @@ export default function DroppableRow(props: {
     onDragStart: (e) => {
       if (
         e.active.id == "draggable" ||
+        `${e.active.id}`.startsWith("draggable-") ||
         e.active.id.toString().startsWith("inv-")
       ) {
         setDragStarted(true);
@@ -24,6 +25,7 @@ export default function DroppableRow(props: {
     onDragEnd: (e) => {
       if (
         e.active.id == "draggable" ||
+        `${e.active.id}`.startsWith("draggable-") ||
         e.active.id.toString().startsWith("inv-")
       ) {
         setDragStarted(false);
@@ -37,11 +39,12 @@ export default function DroppableRow(props: {
     <div
       ref={setNodeRef}
       className={cn(
-        "droppable-row h-full w-full",
+        "droppable-row flex h-full w-full z-30",
         !props.dropped && "items-start justify-start",
         props.dropped && "flex-col",
         dragStarted &&
-          "opacity-55 transition-opacity border border-dashed border-secondary-foreground"
+          "opacity-55 transition-opacity border border-dashed border-secondary-foreground",
+        isOver && "border-2"
       )}
     >
       {props.children}

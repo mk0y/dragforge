@@ -33,7 +33,7 @@ export default function RootLayout({
         <SidebarProvider>
           <AppDnd>
             <AppSidebar />
-            <main className="w-full flex flex-col flex-1 px-2">
+            <main id="main" className="relative w-full flex flex-col flex-1 px-2">
               <div className="flex flex-0 justify-between py-2 items-center">
                 <SidebarTrigger
                   size="icon"

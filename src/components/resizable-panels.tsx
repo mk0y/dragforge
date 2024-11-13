@@ -5,7 +5,7 @@ import { useStore } from "@/hooks/use-store";
 import { nanoid } from "nanoid";
 import { Fragment } from "react";
 import JsxParser from "react-jsx-parser";
-import DroppableRow from "./ui/droppable-row";
+import DroppablePanel from "./ui/droppable-panel";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -14,13 +14,15 @@ import {
 
 const ResizablePanels = () => {
   const appState = useStore(useAppStore, (state) => state);
+  const panels = appState?.panels["home"];
   return (
     <ResizablePanelGroup
       id="resizable-panel-canvas"
       direction="vertical"
-      className="max-w-full"
+      className="max-w-full overflow-visible"
     >
       {appState?.rows.home.rows.map((row, i) => {
+        const droppablePanelId = `droppable-panel-${i}`;
         return (
           <Fragment key={`row-${i}`}>
             <ResizablePanel
@@ -28,29 +30,34 @@ const ResizablePanels = () => {
               order={i + 1}
               key={nanoid()}
               defaultSize={50}
+              className="overflow-visible"
             >
-              <div className="observer flex flex-1 w-full h-full">
-                <DroppableRow
-                  key={`droppable-row-${i}`}
-                  id={`droppable-row-${i}`}
-                  row={row}
-                  dropped={false}
-                >
-                  {appState?.droppedComponents?.length
-                    ? appState?.droppedComponents.map((c, i) => {
-                        return (
-                          <DraggableCanvas key={c.id} id={c.id as string}>
-                            <JsxParser
-                              key={i}
-                              renderInWrapper={false}
-                              jsx={c.jsx}
-                            />
-                          </DraggableCanvas>
-                        );
-                      })
-                    : null}
-                </DroppableRow>
-              </div>
+              <DroppablePanel
+                key={droppablePanelId}
+                id={droppablePanelId}
+                row={row}
+                dropped={false}
+              >
+                {panels &&
+                panels[droppablePanelId] &&
+                panels[droppablePanelId].length
+                  ? panels[droppablePanelId].map((c, i) => {
+                      return (
+                        <DraggableCanvas
+                          key={c.id}
+                          id={`draggable-from-${droppablePanelId}--${c.id}`}
+                        >
+                          <JsxParser
+                            key={i}
+                            renderInWrapper={false}
+                            className="dragged-component"
+                            jsx={c.jsx}
+                          />
+                        </DraggableCanvas>
+                      );
+                    })
+                  : null}
+              </DroppablePanel>
             </ResizablePanel>
             {i < appState.rows.home.rows.length - 1 ? (
               <ResizableHandle

@@ -43,7 +43,7 @@ export default function App() {
                   showWarnings={true}
                   allowUnknownElements={true}
                   onError={console.log}
-                  renderInWrapper={true}
+                  renderInWrapper={false}
                   jsx={appState?.currentComponent.jsx}
                 />
               </Draggable>

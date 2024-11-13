@@ -20,12 +20,10 @@ const ResizablePanelGroup = ({
 const ResizablePanel = ResizablePrimitive.Panel;
 
 const ResizableHandle = ({
-  handle: Handle,
   num,
   className,
   ...props
 }: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
-  handle?: React.ComponentType;
   num?: string;
 }) => {
   const handleRef = useRef<HTMLSpanElement>(null);
