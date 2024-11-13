@@ -30,6 +30,7 @@ const ResizableHandle = ({
 }) => {
   const handleRef = useRef<HTMLSpanElement>(null);
   const [numm, setNum] = useState("");
+  const [hoverState, setHoverState] = useState("");
   useEffect(() => {
     const handleParent = handleRef.current?.parentElement;
     if (handleParent) {
@@ -37,6 +38,14 @@ const ResizableHandle = ({
         for (const mutation of mutationList) {
           if (mutation.type === "attributes") {
             const valuenow = handleParent?.getAttribute("aria-valuenow");
+            const hoverParent = handleParent?.getAttribute(
+              "data-resize-handle-state"
+            );
+            if (hoverParent == "hover" || hoverParent == "drag") {
+              setHoverState(hoverParent);
+            } else {
+              setHoverState("");
+            }
             if (valuenow) {
               setNum(valuenow);
             }
@@ -45,8 +54,6 @@ const ResizableHandle = ({
       });
       observer.observe(handleParent, {
         attributes: true,
-        childList: true,
-        subtree: true,
       });
     }
   }, []);
@@ -59,7 +66,12 @@ const ResizableHandle = ({
       {...props}
     >
       <span
-        className={`resize-handle-span w-8 h-8 items-center justify-center text-center flex group-active:opacity-100 group-hover:opacity-100 opacity-0 delay-75 relative text-muted-foreground bg-muted rounded-full p-1 transition-all z-30`}
+        className={cn(
+          "resize-handle-span w-8 h-8 items-center justify-center text-center flex delay-75 text-muted-foreground bg-muted rounded-full p-1 transition-all z-30",
+          hoverState == "hover" || hoverState == "drag"
+            ? "opacity-100"
+            : "opacity-0"
+        )}
         ref={handleRef}
       >
         {numm || "50"}
