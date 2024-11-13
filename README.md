@@ -46,9 +46,19 @@ Using similar approach it's possible to use variety of different structures and 
 
 ### Roadmap
 
+As of Nov. 13:
+
 1. Remember row split position
 2. Split using absolute values (currently it's by %)
 3. Fix components glitch in inventory
 4. Split rows into columns
-5. Start working on header component, without sub-menus first
-6. UX for big components, like headers, hero sections, sidebars, etc.
+5. Remove component from canvas
+6. Add row and column positioning (left, right, center, space between, space around)
+7. Start working on header component, without sub-menus first
+8. UX for big components, like headers, hero sections, sidebars, etc.
+9. Refine components using prompt engineering
+10. Add context menu on components to set basic stuff like absolute width and height
+11. Improve drag handle UX
+12. Add forms as components and add form actions to send to server
+13. Add predefined form actions like sending emails with templates
+14. Allow component nesting, e.g. add a button to some bigger component
