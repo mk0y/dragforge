@@ -62,3 +62,10 @@ As of Nov. 13:
 12. Add forms as components and add form actions to send to server
 13. Add predefined form actions like sending emails with templates
 14. Allow component nesting, e.g. add a button to some bigger component
+
+Discussed Nov. 14
+- Deployment with github actions
+- Auth pages
+- Decide we keep AWS or move to Fly.io on Monday Nov. 18
+- Implement Auth
+- Connect DB
