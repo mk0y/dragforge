@@ -29,23 +29,29 @@ const ResizableHandle = ({
   const handleRef = useRef<HTMLSpanElement>(null);
   const [numm, setNum] = useState("");
   const [hoverState, setHoverState] = useState("");
+  const droppableCanvas = document.getElementById("droppable-canvas");
   useEffect(() => {
     const handleParent = handleRef.current?.parentElement;
     if (handleParent) {
       const observer = new MutationObserver(function (mutationList, observer) {
         for (const mutation of mutationList) {
-          if (mutation.type === "attributes") {
+          if (mutation.type === "attributes" && droppableCanvas) {
             const valuenow = handleParent?.getAttribute("aria-valuenow");
             const hoverParent = handleParent?.getAttribute(
               "data-resize-handle-state"
             );
-            if (hoverParent == "hover" || hoverParent == "drag") {
-              setHoverState(hoverParent);
-            } else {
-              setHoverState("");
-            }
             if (valuenow) {
-              setNum(valuenow);
+              const panelHeight = Math.round(
+                (parseFloat(valuenow) / 100) * droppableCanvas.offsetHeight
+              );
+              if (hoverParent == "hover" || hoverParent == "drag") {
+                setHoverState(hoverParent);
+              } else {
+                setHoverState("");
+              }
+              if (valuenow) {
+                setNum(`${panelHeight}`);
+              }
             }
           }
         }

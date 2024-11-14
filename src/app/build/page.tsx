@@ -65,7 +65,10 @@ export default function App() {
                 <Plus />
               </Button>
             </div>
-            <div className="droppable-canvas flex flex-1 h-full w-full shadow-md border border-transparent">
+            <div
+              id="droppable-canvas"
+              className="droppable-canvas flex flex-1 h-full w-full shadow-md border border-transparent"
+            >
               <ResizablePanels />
             </div>
           </div>
