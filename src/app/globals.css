@@ -107,6 +107,10 @@
       background-color: transparent !important;
       border-bottom: 1px dashed rgba(255, 0, 0, .5);
     }
+    .canvas-resize-handle--hor {
+      border-bottom: 0px;
+      border-right: 1px dashed rgba(255, 0, 0, .5);
+    }
   }
   .dark {
     .bg-lines-45 {
@@ -129,8 +133,16 @@
       background-color: transparent !important;
       border-bottom: 1px dashed rgba(255, 255, 255, .25);
     }
+    .canvas-resize-handle--hor {
+      border-bottom: 0px;
+      border-right: 1px dashed rgba(255, 255, 255, .25);
+    }
     .canvas-resize-handle:hover {
       border-bottom: 1px dashed rgba(255, 255, 255, .75);
+    }
+    .canvas-resize-handle--hor:hover {
+      border-bottom: 0px;
+      border-right: 1px dashed rgba(255, 255, 255, .75);
     }
   }
 }

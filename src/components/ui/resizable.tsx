@@ -29,8 +29,8 @@ const ResizableHandle = ({
   const handleRef = useRef<HTMLSpanElement>(null);
   const [numm, setNum] = useState("");
   const [hoverState, setHoverState] = useState("");
-  const droppableCanvas = document.getElementById("droppable-canvas");
   useEffect(() => {
+    const droppableCanvas = document.getElementById("droppable-canvas");
     const handleParent = handleRef.current?.parentElement;
     if (handleParent) {
       const observer = new MutationObserver(function (mutationList, observer) {

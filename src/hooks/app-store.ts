@@ -13,6 +13,7 @@ interface DraggableStateComponent {
 
 export interface CanvasRow {
   height: number;
+  panels: string[];
 }
 
 export interface AppState {
@@ -21,6 +22,12 @@ export interface AppState {
   storedComponents?: DraggableStateComponent[];
   rows: Record<string, { page: string; rows: CanvasRow[] }>;
   panels: Record<string, Record<string, DraggableStateComponent[]>>;
+  panelProps: Record<string, Record<string, { height?: number }>>;
+  canvasRows: { order: number; defaultSize: number }[][];
+  isEditCanvas: boolean;
+  toggleIsEditCanvas: () => void;
+  addCanvasPanel: (rowIndex: number) => void;
+  addCanvasRow: () => void;
   setCurrentComponent: (c: DraggableStateComponent) => void;
   addDroppedComponent: (activeId?: string) => void;
   addToCanvasPanel: (panelId: string, page: string) => void;
@@ -35,6 +42,15 @@ export interface AppState {
     componentId: string,
     page: string
   ) => void;
+  updateCanvasPanel: ({
+    page,
+    panelId,
+    props,
+  }: {
+    page: string;
+    panelId: string;
+    props: Record<string, unknown>;
+  }) => void;
   removeByIdDroppedComponent: (id: string) => void;
   addStoredComponent: (id: string, page?: string) => void;
   clearInventory: () => void;
@@ -46,10 +62,59 @@ export const useAppStore = create<AppState>()(
       currentComponent: {},
       droppedComponents: undefined,
       storedComponents: undefined,
-      panels: { home: {} },
+      isEditCanvas: false,
+      toggleIsEditCanvas: () =>
+        set((state) => ({ ...state, isEditCanvas: !state.isEditCanvas })),
+      panels: { home: {} }, // panel components
+      panelProps: { home: {} }, // panel props (width, height...)
       rows: {
-        home: { page: "Home", rows: [{ height: 120 }, { height: 120 }] },
+        home: {
+          page: "Home",
+          rows: [
+            { height: 120, panels: ["panel-canvas-0"] }, // what panels are in which row
+            { height: 120, panels: ["panel-canvas-1"] },
+          ],
+        },
       },
+      canvasRows: [
+        [
+          { order: 1, defaultSize: 50 },
+          { order: 2, defaultSize: 50 },
+        ],
+        [
+          { order: 1, defaultSize: 50 },
+          { order: 2, defaultSize: 50 },
+        ],
+      ],
+      addCanvasPanel: (rowIndex: number) =>
+        set((state) => {
+          const newRows = state.canvasRows.map((row, i) => {
+            return i === rowIndex
+              ? [
+                  ...row,
+                  {
+                    order: row.length + 1,
+                    defaultSize: 50,
+                  },
+                ]
+              : row;
+          });
+          return {
+            ...state,
+            canvasRows: newRows,
+          };
+        }),
+      addCanvasRow: () =>
+        set((state) => {
+          const newRow = [
+            { order: 1, defaultSize: 50 },
+            { order: 2, defaultSize: 50 },
+          ];
+          return {
+            ...state,
+            canvasRows: [...state.canvasRows, newRow],
+          };
+        }),
       setCurrentComponent: (c: DraggableStateComponent) =>
         set((state) => {
           return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
@@ -111,6 +176,15 @@ export const useAppStore = create<AppState>()(
             state
           );
           return newState;
+        }),
+      updateCanvasPanel: ({ page = "home", panelId, props }) =>
+        set((state) => {
+          const newPanelProps = assocPath(
+            [page, panelId, "height"],
+            props.height,
+            state.panelProps
+          );
+          return { ...state, panelProps: newPanelProps };
         }),
       addDroppedComponent: (activeId?: string) =>
         set((state) => {

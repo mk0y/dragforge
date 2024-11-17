@@ -8,9 +8,7 @@ interface TextareaWithSubmitProps {
   onFinished: (str: string) => void;
 }
 
-const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
-  onFinished,
-}) => {
+const QueryInput: React.FC<TextareaWithSubmitProps> = ({ onFinished }) => {
   const [value, setValue] = useState("");
   return (
     <>
@@ -38,4 +36,4 @@ const TextareaWithSubmit: React.FC<TextareaWithSubmitProps> = ({
   );
 };
 
-export default TextareaWithSubmit;
+export default QueryInput;
