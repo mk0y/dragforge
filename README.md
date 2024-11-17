@@ -49,10 +49,10 @@ Using similar approach it's possible to use variety of different structures and 
 As of Nov. 13:
 
 1. Remember row split position
-2. Split using absolute values (currently it's by %)
-3. Fix components glitch in inventory
-4. Split rows into columns
-5. Remove component from canvas
+2. ~Split using absolute values (currently it's by %)~ (For horizontal panels we should use %)
+3. ~Fix components glitch in inventory~ - this seems to happen on dev mode sometimes, not on prod build
+4. ~Split rows into columns~ (Also added add new rows)
+5. Remove components from canvas
 6. Add row and column positioning (left, right, center, space between, space around)
 7. Start working on header component, without sub-menus first
 8. UX for big components, like headers, hero sections, sidebars, etc.
@@ -69,3 +69,10 @@ Discussed Nov. 14
 - Decide we keep AWS or move to Fly.io on Monday Nov. 18
 - Implement Auth
 - Connect DB
+
+Update Nov. 17:
+
+Add rows and split columns is now possible using canvas sidebar buttons:
+
+<img width="1779" alt="image" src="https://github.com/user-attachments/assets/169dcf39-7413-414e-93d2-7e095d8fcd92">
+
