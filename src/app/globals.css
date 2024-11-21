@@ -84,65 +84,62 @@
   }
 }
 
-
 @layer base {
   :root {
     .bg-lines-45 {
       background-image: repeating-linear-gradient(
-        45deg, 
+        45deg,
         #fff0f0,
-        #fcfcec 1px, 
-        white 1px, 
+        #fcfcec 1px,
+        white 1px,
         white 2px
       );
     }
     .droppable-canvas {
-      background-image:
-        linear-gradient(to right, #eaeaea 1px, transparent 1px),
+      background-image: linear-gradient(to right, #eaeaea 1px, transparent 1px),
         linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
       background-size: 32px 32px;
       background-color: #fafaf1;
     }
     .canvas-resize-handle {
       background-color: transparent !important;
-      border-bottom: 1px dashed rgba(255, 0, 0, .5);
+      border-bottom: 1px dashed rgba(255, 0, 0, 0.5);
     }
     .canvas-resize-handle--hor {
       border-bottom: 0px;
-      border-right: 1px dashed rgba(255, 0, 0, .5);
+      border-right: 1px dashed rgba(255, 0, 0, 0.5);
     }
   }
   .dark {
     .bg-lines-45 {
       background-image: repeating-linear-gradient(
-        45deg, 
+        45deg,
         #1e1e1e,
-        #1e1e1e 1px, 
-        black 3px, 
+        #1e1e1e 1px,
+        black 3px,
         black 4px
       );
     }
     .droppable-canvas {
-      background-image:
-        linear-gradient(to right, #1a1616 1px, transparent 1px),
+      background-image: linear-gradient(to right, #1a1616 1px, transparent 1px),
         linear-gradient(to bottom, #1a1616, transparent 1px);
       background-size: 32px 32px;
       background-color: #0a0a08;
     }
     .canvas-resize-handle {
       background-color: transparent !important;
-      border-bottom: 1px dashed rgba(255, 255, 255, .25);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
     }
     .canvas-resize-handle--hor {
       border-bottom: 0px;
-      border-right: 1px dashed rgba(255, 255, 255, .25);
+      border-right: 1px dashed rgba(255, 255, 255, 0.25);
     }
     .canvas-resize-handle:hover {
-      border-bottom: 1px dashed rgba(255, 255, 255, .75);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.75);
     }
     .canvas-resize-handle--hor:hover {
       border-bottom: 0px;
-      border-right: 1px dashed rgba(255, 255, 255, .75);
+      border-right: 1px dashed rgba(255, 255, 255, 0.75);
     }
   }
 }
@@ -154,7 +151,13 @@ textarea::-webkit-scrollbar {
 .query-input--container {
   position: relative;
   display: inline-block;
-  background: linear-gradient(60deg, rgb(0, 89, 255), rgb(51, 220, 22), rgb(255, 111, 0), rgb(222, 19, 222));
+  background: linear-gradient(
+    60deg,
+    rgb(0, 89, 255),
+    rgb(51, 220, 22),
+    rgb(255, 111, 0),
+    rgb(222, 19, 222)
+  );
   background-size: 300% 300%;
   animation: gradientAnimation 15s linear infinite;
   animation-delay: 4s;
@@ -171,6 +174,60 @@ textarea::-webkit-scrollbar {
   100% {
     background-position: 10% 50%;
   }
+}
+
+/* Define the animation */
+@keyframes scaleDown {
+  from {
+    transform: scale(1);
+    opacity: 1;
+    transform-origin: top left;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: bottom right;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(1);
+    opacity: 1;
+    transform-origin: bottom center;
+  }
+  to {
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: top center;
+  }
+}
+
+@keyframes scaleBack {
+  from {
+    transform: scale(0);
+    opacity: 0;
+    transform-origin: top center;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+    transform-origin: bottom center;
+  }
+}
+
+/* Apply the animation to the element */
+.hidden-animation {
+  animation: scaleDown 0.5s forwards; /* Adjust duration as needed */
+}
+
+.hidden-animation--to-top {
+  animation: scaleUp 0.5s forwards; /* Adjust duration as needed */
+}
+
+.hidden-animation--back {
+  opacity: 0;
+  animation: scaleBack 0.5s forwards; /* Adjust duration as needed */
 }
 
 /* @layer base {

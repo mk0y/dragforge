@@ -25,6 +25,10 @@ export interface AppState {
   panelProps: Record<string, Record<string, { height?: number }>>;
   canvasRows: { order: number; defaultSize: number }[][];
   isEditCanvas: boolean;
+  isMagicInputHidden: boolean;
+  isMagicInputToggled: boolean;
+  setIsMagicInputToggled: (isToggled: boolean) => void;
+  setIsMagicInputHidden: (isHidden: boolean) => void;
   toggleIsEditCanvas: () => void;
   addCanvasPanel: (rowIndex: number) => void;
   addCanvasRow: () => void;
@@ -63,6 +67,22 @@ export const useAppStore = create<AppState>()(
       droppedComponents: undefined,
       storedComponents: undefined,
       isEditCanvas: false,
+      isMagicInputHidden: false,
+      isMagicInputToggled: false,
+      setIsMagicInputToggled: (isToggled: boolean) =>
+        set((state) => {
+          return {
+            ...state,
+            isMagicInputToggled: isToggled,
+          };
+        }),
+      setIsMagicInputHidden: (isHidden: boolean) =>
+        set((state) => {
+          return {
+            ...state,
+            isMagicInputHidden: isHidden,
+          };
+        }),
       toggleIsEditCanvas: () =>
         set((state) => ({ ...state, isEditCanvas: !state.isEditCanvas })),
       panels: { home: {} }, // panel components

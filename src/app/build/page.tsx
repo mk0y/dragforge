@@ -1,7 +1,7 @@
 "use client";
 import AddNewRow from "@/components/AddNewRow";
+import MagicInputArea from "@/components/MagicInputArea";
 import * as Palette from "@/components/palette/all-components";
-import QueryInput from "@/components/QueryInput/query-input";
 import ResizablePanels from "@/components/resizable-panels";
 import SplitCanvasMode from "@/components/SplitCanvasMode";
 import Draggable from "@/components/ui/draggable";
@@ -9,7 +9,6 @@ import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { Puzzle } from "lucide-react";
-import { nanoid } from "nanoid";
 import JsxParser from "react-jsx-parser";
 
 export default function App() {
@@ -18,16 +17,13 @@ export default function App() {
     <div className="flex flex-col flex-1 items-center justify-between bg-primary-foreground">
       <div className="flex min-w-full h-full">
         <div className="flex flex-col flex-1 w-full h-full text-sm px-6">
-          <div className="query-input flex flex-col fixed bottom-0 left-0 w-full justify-center z-20 items-center">
-            <div className="w-7xl flex items-center p-12">
-              <p className="w-16 mr-4">Build me:</p>
-              <QueryInput
-                onFinished={(jsx: string) => {
-                  appState?.setCurrentComponent({ jsx, id: nanoid() });
-                }}
-              />
+          {!appState?.isMagicInputHidden ? (
+            <div className="query-input flex flex-col fixed bottom-0 left-0 w-full justify-center z-20 items-center">
+              <div className="w-7xl p-12">
+                <MagicInputArea />
+              </div>
             </div>
-          </div>
+          ) : null}
           <div
             className={cn(
               `h-auto min-h-20 flex flex-0 items-center justify-start p-6 my-6 min-w-full bg-lines-45 shadow-sm`,
