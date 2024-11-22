@@ -1,7 +1,7 @@
 import { useAppStore } from "@/hooks/app-store";
 import { cn } from "@/lib/utils";
 import { nanoid } from "nanoid";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useStore } from "zustand";
 import ActionItems from "./QueryInput/ActionItems";
 import QueryInput from "./QueryInput/query-input";
@@ -9,9 +9,19 @@ import QueryInput from "./QueryInput/query-input";
 const MagicInputArea = () => {
   const appState = useStore(useAppStore, (state) => state);
   const divRef = useRef<HTMLDivElement>(null);
-  divRef.current?.addEventListener("animationend", () =>
-    appState.setIsMagicInputHidden(true)
-  );
+  useEffect(() => {
+    const ref = divRef.current;
+    const listener = ref?.addEventListener("animationend", () => {
+      if (!appState.isMagicInputHidden && appState.isMagicInputToggled) {
+        appState.setIsMagicInputHidden(true);
+      }
+    });
+    return () => {
+      if (ref && listener) {
+        ref.removeEventListener("animationend", listener);
+      }
+    };
+  }, [appState, divRef]);
   return (
     <div
       ref={divRef}
