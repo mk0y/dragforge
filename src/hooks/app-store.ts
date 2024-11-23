@@ -20,7 +20,6 @@ export interface AppState {
   currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
-  rows: Record<string, { page: string; rows: CanvasRow[] }>;
   panels: Record<string, Record<string, DraggableStateComponent[]>>;
   panelProps: Record<string, Record<string, { height?: number }>>;
   canvasRows: { order: number; defaultSize: number }[][];
@@ -31,7 +30,10 @@ export interface AppState {
   setIsMagicInputHidden: (isHidden: boolean) => void;
   toggleIsEditCanvas: () => void;
   addCanvasPanel: (rowIndex: number) => void;
-  addCanvasRow: () => void;
+  removeCanvasPanel: (rowIndex: number) => void;
+  addCanvasRow: (rowIndex?: number) => void;
+  addCanvasRowAbove: (rowIndex: number) => void;
+  removeRow: (rowIndex: number) => void;
   setCurrentComponent: (c: DraggableStateComponent) => void;
   addDroppedComponent: (activeId?: string) => void;
   addToCanvasPanel: (panelId: string, page: string) => void;
@@ -87,15 +89,6 @@ export const useAppStore = create<AppState>()(
         set((state) => ({ ...state, isEditCanvas: !state.isEditCanvas })),
       panels: { home: {} }, // panel components
       panelProps: { home: {} }, // panel props (width, height...)
-      rows: {
-        home: {
-          page: "Home",
-          rows: [
-            { height: 120, panels: ["panel-canvas-0"] }, // what panels are in which row
-            { height: 120, panels: ["panel-canvas-1"] },
-          ],
-        },
-      },
       canvasRows: [
         [
           { order: 1, defaultSize: 50 },
@@ -124,15 +117,62 @@ export const useAppStore = create<AppState>()(
             canvasRows: newRows,
           };
         }),
-      addCanvasRow: () =>
+      removeCanvasPanel: (rowIndex: number) =>
         set((state) => {
-          const newRow = [
-            { order: 1, defaultSize: 50 },
-            { order: 2, defaultSize: 50 },
-          ];
+          const newRows = state.canvasRows.map((row, i) => {
+            return i === rowIndex && row.length > 1 ? row.slice(0, -1) : row;
+          });
           return {
             ...state,
-            canvasRows: [...state.canvasRows, newRow],
+            canvasRows: newRows,
+          };
+        }),
+      addCanvasRow: (rowIndex?: number) =>
+        set((state) => {
+          const newRow = [{ order: 1, defaultSize: 50 }];
+          const updatedRows = [...state.canvasRows];
+          if (rowIndex !== undefined) {
+            updatedRows.splice(rowIndex + 1, 0, newRow);
+          } else {
+            updatedRows.push(newRow);
+          }
+          return {
+            ...state,
+            canvasRows: updatedRows,
+          };
+        }),
+      addCanvasRowAbove: (rowIndex: number) =>
+        set((state) => {
+          const newRow = [{ order: 1, defaultSize: 50 }];
+          const updatedRows = [...state.canvasRows];
+          if (rowIndex !== undefined) {
+            updatedRows.splice(rowIndex, 0, newRow);
+          } else {
+            updatedRows.unshift(newRow);
+          }
+          return {
+            ...state,
+            canvasRows: updatedRows,
+          };
+        }),
+      removeRow: (rowIndex: number) =>
+        set((state) => {
+          if (state.canvasRows.length <= 1) {
+            return state;
+          }
+          if (
+            rowIndex === undefined ||
+            rowIndex < 0 ||
+            rowIndex >= state.canvasRows.length
+          ) {
+            return state;
+          }
+          const updatedRows = state.canvasRows.filter(
+            (_, index) => index !== rowIndex
+          );
+          return {
+            ...state,
+            canvasRows: updatedRows,
           };
         }),
       setCurrentComponent: (c: DraggableStateComponent) =>

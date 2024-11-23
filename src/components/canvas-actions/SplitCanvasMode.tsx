@@ -2,13 +2,13 @@ import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
 import { cn } from "@/lib/utils";
 import { TableCellsSplit } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "../ui/tooltip";
 
 const AddNewRow = () => {
   const { isEditCanvas = false, toggleIsEditCanvas = () => {} } =
@@ -33,8 +33,8 @@ const AddNewRow = () => {
             </Button>
           </div>
         </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>Split panels</p>
+        <TooltipContent side="left">
+          <p>Arrange panels</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

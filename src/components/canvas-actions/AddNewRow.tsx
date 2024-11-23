@@ -1,13 +1,13 @@
 import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
 import { Rows2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "../ui/tooltip";
 
 const AddNewRow = () => {
   const { addCanvasRow = () => {} } =
@@ -21,14 +21,14 @@ const AddNewRow = () => {
               size="icon"
               variant="ghost"
               className="dark:hover:bg-black rounded-none"
-              onClick={addCanvasRow}
+              onClick={() => addCanvasRow()}
             >
               <Rows2 />
             </Button>
           </div>
         </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>Add a row</p>
+        <TooltipContent side="left">
+          <p>Add a bottom row</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

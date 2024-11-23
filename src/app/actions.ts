@@ -20,7 +20,6 @@ export const generateComponentFromGPT = async (query: string) => {
   const { content: componentsCommaStr } =
     await askGPTWhichComponentsToUse_Completion(query);
   const componentNames = componentsCommaStr?.split(",").map((s) => s.trim());
-  console.log({ componentNames });
   if (componentNames && componentNames[0]) {
     const componentStr = fs.readFileSync(
       `src/components/palette/${componentNames[0]}.tsx`,
@@ -31,7 +30,6 @@ export const generateComponentFromGPT = async (query: string) => {
       componentNames[0],
       componentStr
     );
-    console.log({ content });
     return { content };
   } else {
     return {};

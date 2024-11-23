@@ -8,7 +8,7 @@ const ActionButton = ({
   onClick,
 }: {
   children: React.ReactNode;
-  variant?: "red" | "blue" | "purple" | "yellow" | "green" | "pink";
+  variant?: "teal" | "blue" | "purple" | "yellow" | "green" | "pink";
   onClick?: Function;
 }) => {
   return (
@@ -26,7 +26,7 @@ const ActionButton = ({
 const ActionItems = ({ className }: { className?: string }) => {
   return (
     <div className={cn("flex items-start justify-between", className)}>
-      <ActionButton key={nanoid()} variant="red">
+      <ActionButton key={nanoid()} variant="teal">
         Build me...
       </ActionButton>
       <ActionButton key={nanoid()} variant="blue">

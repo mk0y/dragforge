@@ -18,12 +18,12 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        red: "hover:bg-red-700/25 hover:text-accent-foreground",
-        blue: "hover:bg-blue-700/25 hover:text-accent-foreground",
+        teal: "hover:bg-sky-500/25 hover:text-accent-foreground",
+        blue: "hover:bg-teal-700/25 hover:text-accent-foreground",
         purple: "hover:bg-purple-700/25 hover:text-accent-foreground",
         yellow: "hover:bg-yellow-700/25 hover:text-accent-foreground",
         green: "hover:bg-green-700/25 hover:text-accent-foreground",
-        pink: "hover:bg-pink-700/25 hover:text-accent-foreground",
+        pink: "hover:bg-rose-400/25 hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

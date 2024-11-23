@@ -5,9 +5,8 @@ import { useStore } from "@/hooks/use-store";
 import { Fragment } from "react";
 import DroppablePanel from "./ui/droppable-panel";
 
-import { PlusCircle } from "lucide-react";
 import JsxParser from "react-jsx-parser";
-import { Button } from "./ui/button";
+import ArrangePanelsActions from "./ArrangePanelsActions";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -17,8 +16,6 @@ const ResizablePanels = () => {
   const {
     isEditCanvas = false,
     panels = {},
-    addCanvasPanel = () => {},
-    addCanvasRow = () => {},
     canvasRows = [],
   } = useStore(useAppStore, (state) => state) || {};
   return (
@@ -33,7 +30,8 @@ const ResizablePanels = () => {
             id={`row-${rowIndex}`}
             order={rowIndex + 1}
             className="overflow-visible"
-            defaultSize={100 / canvasRows.length} // Distribute height equally at start
+            defaultSize={100 / canvasRows.length}
+            minSize={0}
           >
             <div className="relative w-full h-full">
               <ResizablePanelGroup
@@ -88,17 +86,13 @@ const ResizablePanels = () => {
                 })}
               </ResizablePanelGroup>
               {isEditCanvas ? (
-                <Button
-                  onClick={() => addCanvasPanel && addCanvasPanel(rowIndex)}
-                  className="absolute top-2 left-2 rounded px-2 py-1"
-                >
-                  <PlusCircle />
-                </Button>
+                <ArrangePanelsActions rowIndex={rowIndex} />
               ) : null}
             </div>
           </ResizablePanel>
           {rowIndex < canvasRows.length - 1 && (
             <ResizableHandle
+              hitAreaMargins={{ coarse: 1, fine: 1 }}
               className="canvas-resize-handle outline-none relative"
               key={`handle-between-rows-${rowIndex}`}
             />

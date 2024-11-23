@@ -37,20 +37,27 @@ const ResizableHandle = ({
         for (const mutation of mutationList) {
           if (mutation.type === "attributes" && droppableCanvas) {
             const valuenow = handleParent?.getAttribute("aria-valuenow");
-            const hoverParent = handleParent?.getAttribute(
-              "data-resize-handle-state"
-            );
-            if (valuenow) {
-              const panelHeight = Math.round(
-                (parseFloat(valuenow) / 100) * droppableCanvas.offsetHeight
+            const previousSibling = handleParent?.previousElementSibling;
+            if (previousSibling instanceof HTMLElement) {
+              const hoverParent = handleParent?.getAttribute(
+                "data-resize-handle-state"
               );
-              if (hoverParent == "hover" || hoverParent == "drag") {
-                setHoverState(hoverParent);
-              } else {
-                setHoverState("");
-              }
+              const direction = handleParent?.getAttribute(
+                "data-panel-group-direction"
+              );
               if (valuenow) {
-                setNum(`${panelHeight}`);
+                const siblingHeightOrWidth =
+                  direction == "vertical"
+                    ? previousSibling.offsetHeight
+                    : previousSibling.offsetWidth;
+                if (hoverParent == "hover" || hoverParent == "drag") {
+                  setHoverState(hoverParent);
+                } else {
+                  setHoverState("");
+                }
+                if (valuenow) {
+                  setNum(`${siblingHeightOrWidth}`);
+                }
               }
             }
           }

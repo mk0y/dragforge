@@ -1,9 +1,10 @@
 "use client";
-import AddNewRow from "@/components/AddNewRow";
+import AddNewRow from "@/components/canvas-actions/AddNewRow";
+import PreviewCanvas from "@/components/canvas-actions/PreviewCanvas";
+import SplitCanvasMode from "@/components/canvas-actions/SplitCanvasMode";
 import MagicInputArea from "@/components/MagicInputArea";
 import * as Palette from "@/components/palette/all-components";
 import ResizablePanels from "@/components/resizable-panels";
-import SplitCanvasMode from "@/components/SplitCanvasMode";
 import Draggable from "@/components/ui/draggable";
 import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
@@ -53,15 +54,20 @@ export default function App() {
             )}
           </div>
           <div className="flex flex-1 h-full w-full">
-            <div className="w-9 h-full dark:bg-secondary flex flex-col flex-0">
+            <div className="w-9 h-full pt-9 dark:bg-secondary flex flex-col flex-0">
               <SplitCanvasMode />
               <AddNewRow />
             </div>
-            <div
-              id="droppable-canvas"
-              className="droppable-canvas flex flex-1 h-full w-full shadow-md border border-transparent"
-            >
-              <ResizablePanels />
+            <div className="flex flex-1 flex-col h-full w-full">
+              <div className="canvas-top-bar flex flex-0 h-9 w-full justify-end items-center dark:bg-secondary">
+                <PreviewCanvas />
+              </div>
+              <div
+                id="droppable-canvas"
+                className="droppable-canvas flex flex-1 h-full w-full shadow-md border border-transparent"
+              >
+                <ResizablePanels />
+              </div>
             </div>
           </div>
         </div>
