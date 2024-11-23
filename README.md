@@ -52,17 +52,18 @@ As of Nov. 17:
 2. ~Split using absolute values (currently it's by %)~ (For horizontal panels we should use %)
 3. ~Fix components glitch in inventory~ - this seems to happen on dev mode sometimes, not on prod build
 4. ~Split rows into columns~ (Also added add new rows)
-5. Remove components from canvas
-6. Hide magic input field, to reduce distraction; possible solution: floating button
-7. Add row and column positioning (left, right, center, space between, space around)
-8. Start working on header component, without sub-menus first
-9. UX for big components, like headers, hero sections, sidebars, etc.
-10. Refine components using prompt engineering
-11. Add context menu on components to set basic stuff like absolute width and height
-12. Improve drag handle UX
-13. Add forms as components and add form actions to send to server
-14. Add predefined form actions like sending emails with templates
-15. Allow component nesting, e.g. add a button to some bigger component
+5. ~Arrange panels actions with add/remove rows~
+6. Remove components from canvas
+7. Hide magic input field, to reduce distraction; possible solution: floating button
+8. Add row and column positioning (left, right, center, space between, space around)
+9. Start working on header component, without sub-menus first
+10. UX for big components, like headers, hero sections, sidebars, etc.
+11. Refine components using prompt engineering
+12. Add context menu on components to set basic stuff like absolute width and height
+13. Improve drag handle UX
+14. Add forms as components and add form actions to send to server
+15. Add predefined form actions like sending emails with templates
+16. Allow component nesting, e.g. add a button to some bigger component
 
 Discussed Nov. 14
 - Deployment with github actions
