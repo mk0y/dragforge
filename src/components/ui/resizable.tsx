@@ -32,46 +32,47 @@ const ResizableHandle = ({
   useEffect(() => {
     const droppableCanvas = document.getElementById("droppable-canvas");
     const handleParent = handleRef.current?.parentElement;
+    let observer: MutationObserver | null = null;
     if (handleParent) {
-      const observer = new MutationObserver(function (mutationList, observer) {
+      observer = new MutationObserver((mutationList) => {
+        let newHoverState = "";
+        let newNum = "";
         for (const mutation of mutationList) {
           if (mutation.type === "attributes" && droppableCanvas) {
             const valuenow = handleParent?.getAttribute("aria-valuenow");
             const previousSibling = handleParent?.previousElementSibling;
-            if (previousSibling instanceof HTMLElement) {
-              const hoverParent = handleParent?.getAttribute(
-                "data-resize-handle-state"
-              );
-              const direction = handleParent?.getAttribute(
-                "data-panel-group-direction"
-              );
-              if (valuenow) {
-                const siblingHeightOrWidth =
-                  direction == "vertical"
-                    ? previousSibling.offsetHeight
-                    : previousSibling.offsetWidth;
-                if (hoverParent == "hover" || hoverParent == "drag") {
-                  setHoverState(hoverParent);
-                } else {
-                  setHoverState("");
-                }
-                if (valuenow) {
-                  setNum(`${siblingHeightOrWidth}`);
-                }
-              }
+            const hoverParent = handleParent?.getAttribute(
+              "data-resize-handle-state"
+            );
+            const direction = handleParent?.getAttribute(
+              "data-panel-group-direction"
+            );
+            if (previousSibling instanceof HTMLElement && valuenow) {
+              const siblingHeightOrWidth =
+                direction === "vertical"
+                  ? previousSibling.offsetHeight
+                  : previousSibling.offsetWidth;
+              newHoverState =
+                hoverParent === "hover" || hoverParent === "drag"
+                  ? hoverParent
+                  : "";
+              newNum = `${siblingHeightOrWidth}`;
             }
           }
         }
+        if (newHoverState !== hoverState) setHoverState(newHoverState);
+        if (newNum !== numm) setNum(newNum);
       });
-      observer.observe(handleParent, {
-        attributes: true,
-      });
+      observer.observe(handleParent, { attributes: true });
     }
-  }, []);
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, [hoverState, numm]);
   return (
     <ResizablePrimitive.PanelResizeHandle
       className={cn(
-        "relative flex w-px items-center group justify-center bg-neutral-200 after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-1 data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0 [&[data-panel-group-direction=vertical]>div]:rotate-90 dark:bg-neutral-800 dark:focus-visible:ring-neutral-300",
+        "relative flex w-px items-center group justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:ring-offset-1 data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:-translate-y-1/2 data-[panel-group-direction=vertical]:after:translate-x-0 [&[data-panel-group-direction=vertical]>div]:rotate-90",
         className
       )}
       {...props}

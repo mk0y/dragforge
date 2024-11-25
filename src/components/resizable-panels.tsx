@@ -5,6 +5,7 @@ import { useStore } from "@/hooks/use-store";
 import { Fragment } from "react";
 import DroppablePanel from "./ui/droppable-panel";
 
+import { addOpacityToHex, cn } from "@/lib/utils";
 import JsxParser from "react-jsx-parser";
 import ArrangePanelsActions from "./ArrangePanelsActions";
 import {
@@ -17,6 +18,7 @@ const ResizablePanels = () => {
     isEditCanvas = false,
     panels = {},
     canvasRows = [],
+    dragHandlesColor = null,
   } = useStore(useAppStore, (state) => state) || {};
   return (
     <ResizablePanelGroup
@@ -45,7 +47,7 @@ const ResizablePanels = () => {
                       <ResizablePanel
                         id={`row-${rowIndex}-${panelIndex}`}
                         order={panel.order}
-                        defaultSize={panel.defaultSize}
+                        defaultSize={100 / row.length}
                         className="overflow-visible"
                       >
                         <DroppablePanel
@@ -77,7 +79,19 @@ const ResizablePanels = () => {
                       </ResizablePanel>
                       {panelIndex < row.length - 1 && (
                         <ResizableHandle
-                          className="canvas-resize-handle canvas-resize-handle--hor outline-none relative z-10"
+                          className={cn(
+                            "canvas-resize-handle canvas-resize-handle--hor outline-none relative z-10",
+                            dragHandlesColor &&
+                              `dark:!border-[${addOpacityToHex(
+                                dragHandlesColor,
+                                0.25
+                              )}]`,
+                            dragHandlesColor &&
+                              `dark:hover:!border-[${addOpacityToHex(
+                                dragHandlesColor,
+                                0.75
+                              )}]`
+                          )}
                           key={`handle-between-panels-${rowIndex}-${panelIndex}`}
                         />
                       )}
@@ -93,7 +107,16 @@ const ResizablePanels = () => {
           {rowIndex < canvasRows.length - 1 && (
             <ResizableHandle
               hitAreaMargins={{ coarse: 1, fine: 1 }}
-              className="canvas-resize-handle outline-none relative"
+              className={cn(
+                "canvas-resize-handle outline-none relative",
+                dragHandlesColor &&
+                  `dark:!border-[${addOpacityToHex(dragHandlesColor, 0.25)}]`,
+                dragHandlesColor &&
+                  `dark:hover:!border-[${addOpacityToHex(
+                    dragHandlesColor,
+                    0.75
+                  )}]`
+              )}
               key={`handle-between-rows-${rowIndex}`}
             />
           )}

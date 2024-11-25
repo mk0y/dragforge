@@ -1,7 +1,9 @@
 "use client";
 import AddNewRow from "@/components/canvas-actions/AddNewRow";
+import PaintResizableHandle from "@/components/canvas-actions/PaintResizableHandle";
 import PreviewCanvas from "@/components/canvas-actions/PreviewCanvas";
 import SplitCanvasMode from "@/components/canvas-actions/SplitCanvasMode";
+import UndoRedoActions from "@/components/canvas-actions/UndoRedoActions";
 import MagicInputArea from "@/components/MagicInputArea";
 import * as Palette from "@/components/palette/all-components";
 import ResizablePanels from "@/components/resizable-panels";
@@ -57,9 +59,11 @@ export default function App() {
             <div className="w-9 h-full pt-9 dark:bg-secondary flex flex-col flex-0">
               <SplitCanvasMode />
               <AddNewRow />
+              <PaintResizableHandle />
             </div>
             <div className="flex flex-1 flex-col h-full w-full">
-              <div className="canvas-top-bar flex flex-0 h-9 w-full justify-end items-center dark:bg-secondary">
+              <div className="canvas-top-bar flex flex-0 h-9 w-full justify-between items-center dark:bg-secondary">
+                <UndoRedoActions />
                 <PreviewCanvas />
               </div>
               <div

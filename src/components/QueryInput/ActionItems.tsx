@@ -30,10 +30,10 @@ const ActionItems = ({ className }: { className?: string }) => {
         Build me...
       </ActionButton>
       <ActionButton key={nanoid()} variant="blue">
-        Page background
+        Describe page
       </ActionButton>
       <ActionButton key={nanoid()} variant="yellow">
-        Panel background
+        Describe panel
       </ActionButton>
       <ActionButton key={nanoid()} variant="purple">
         Refine component

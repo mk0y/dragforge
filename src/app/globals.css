@@ -103,11 +103,11 @@
     }
     .canvas-resize-handle {
       background-color: transparent !important;
-      border-bottom: 1px dashed rgba(255, 0, 0, 0.5);
+      /* border-bottom: 1px dashed rgba(255, 0, 0, 0.5); */
     }
     .canvas-resize-handle--hor {
       border-bottom: 0px;
-      border-right: 1px dashed rgba(255, 0, 0, 0.5);
+      /* border-right: 1px dashed rgba(255, 0, 0, 0.5); */
     }
   }
   .dark {
