@@ -1,5 +1,6 @@
 "use client";
 import { fromActiveId } from "@/lib/utils";
+import throttle from "just-throttle";
 import { nanoid } from "nanoid";
 import { append, assocPath, equals, filter, find } from "ramda";
 import { temporal } from "zundo";
@@ -17,17 +18,21 @@ export interface CanvasRow {
   panels: string[];
 }
 
+export type MagicInputStates = "build" | "page-bg";
+
 export interface AppState {
   currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
   panels: Record<string, Record<string, DraggableStateComponent[]>>;
   panelProps: Record<string, Record<string, { height?: number }>>;
-  canvasRows: { order: number; defaultSize: number }[][];
+  canvasRows: { order: number }[][];
   isEditCanvas: boolean;
   isMagicInputHidden: boolean;
   isMagicInputToggled: boolean;
   dragHandlesColor: string | null;
+  magicInputState: MagicInputStates;
+  setMagicInputState: (state: MagicInputStates) => void;
   setDragHandlesColor: (color: string) => void;
   setIsMagicInputToggled: (isToggled: boolean) => void;
   setIsMagicInputHidden: (isHidden: boolean) => void;
@@ -76,6 +81,7 @@ export const useAppStore = create<AppState>()(
         isMagicInputHidden: false,
         isMagicInputToggled: false,
         dragHandlesColor: null,
+        magicInputState: "build",
         setDragHandlesColor: (color: string) =>
           set((state) => {
             return {
@@ -102,15 +108,16 @@ export const useAppStore = create<AppState>()(
         panels: { home: {} }, // panel components
         panelProps: { home: {} }, // panel props (width, height...)
         canvasRows: [
-          [
-            { order: 1, defaultSize: 50 },
-            { order: 2, defaultSize: 50 },
-          ],
-          [
-            { order: 1, defaultSize: 50 },
-            { order: 2, defaultSize: 50 },
-          ],
+          [{ order: 1 }, { order: 2 }],
+          [{ order: 1 }, { order: 2 }],
         ],
+        setMagicInputState: (s: MagicInputStates) =>
+          set((state) => {
+            return {
+              ...state,
+              magicInputState: s,
+            };
+          }),
         addCanvasPanel: (rowIndex: number) =>
           set((state) => {
             const newRows = state.canvasRows.map((row, i) => {
@@ -119,7 +126,6 @@ export const useAppStore = create<AppState>()(
                     ...row,
                     {
                       order: row.length + 1,
-                      defaultSize: 50,
                     },
                   ]
                 : row;
@@ -141,7 +147,7 @@ export const useAppStore = create<AppState>()(
           }),
         addCanvasRow: (rowIndex?: number) =>
           set((state) => {
-            const newRow = [{ order: 1, defaultSize: 50 }];
+            const newRow = [{ order: 1 }];
             const updatedRows = [...state.canvasRows];
             if (rowIndex !== undefined) {
               updatedRows.splice(rowIndex + 1, 0, newRow);
@@ -155,7 +161,7 @@ export const useAppStore = create<AppState>()(
           }),
         addCanvasRowAbove: (rowIndex: number) =>
           set((state) => {
-            const newRow = [{ order: 1, defaultSize: 50 }];
+            const newRow = [{ order: 1 }];
             const updatedRows = [...state.canvasRows];
             if (rowIndex !== undefined) {
               updatedRows.splice(rowIndex, 0, newRow);
@@ -340,6 +346,8 @@ export const useAppStore = create<AppState>()(
         equality: (pastState, currentState) =>
           equals(pastState.canvasRows, currentState.canvasRows) &&
           pastState.dragHandlesColor == currentState.dragHandlesColor,
+        handleSet: (handleSet) =>
+          throttle((state) => handleSet(state), 1000, { trailing: true }),
       }
     ),
     {
