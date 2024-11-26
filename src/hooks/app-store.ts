@@ -354,13 +354,15 @@ export const useAppStore = create<AppState>()(
           }),
       }),
       {
-        partialize: ({ canvasRows, dragHandlesColor }) => ({
+        partialize: ({ canvasRows, dragHandlesColor, pageProps }) => ({
           canvasRows,
           dragHandlesColor,
+          pageProps,
         }),
         equality: (pastState, currentState) =>
           equals(pastState.canvasRows, currentState.canvasRows) &&
-          pastState.dragHandlesColor == currentState.dragHandlesColor,
+          pastState.dragHandlesColor == currentState.dragHandlesColor &&
+          equals(pastState.pageProps, currentState.pageProps),
         handleSet: (handleSet) =>
           throttle((state) => handleSet(state), 1000, { trailing: true }),
       }
