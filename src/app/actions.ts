@@ -1,4 +1,5 @@
 "use server";
+import { MagicInputStates } from "@/hooks/app-store";
 import fs from "fs";
 import { readdir } from "fs/promises";
 import { OpenAI } from "openai";
@@ -15,6 +16,44 @@ const __dirname = path.dirname(__filename);
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+export const delegateGPTAction = async (
+  query: string,
+  action: MagicInputStates
+) => {
+  if (action == "page") {
+    return generatePagePropsFromGPT(query);
+  } else {
+    return generateComponentFromGPT(query);
+  }
+};
+
+export const generatePagePropsFromGPT = async (query: string) => {
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content: `User will ask you to define css for <body> tag.
+We always use TailwindCSS classes.
+For example: user asks to make a white background with top blue border. You will generate something similar to: "bg-white border-t-4 border-cyan-500". As concise as that, no explanation needed because I need this exact value.
+Or for example: user asks about gradient background, you could produce like: "bg-gradient-to-b from-pink-900 via-pink-900/90% to-gray-900 bg-[size:100%]". Use color stops if user asks. And background should always be stretching to occupy full space. Use repeating only if user asks.
+For gradients that involve more than 2 colors, example is: "bg-gradient-to-b from-pink-900 from-1% via-gray-900 via-5% via-gray-900 via-10% to-gray-900 to-90% bg-[size:100%]".
+Don't surround the answer with quotes.
+Same process if asked for margins, paddings, etc.`,
+      },
+      {
+        role: "user",
+        content: query,
+      },
+    ],
+    model: "gpt-4o-mini",
+  });
+  const content = chatCompletion.choices[0].message.content;
+  if (content) {
+    return { content };
+  }
+  return {};
+};
 
 export const generateComponentFromGPT = async (query: string) => {
   const { content: componentsCommaStr } =

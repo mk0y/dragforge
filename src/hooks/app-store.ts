@@ -18,7 +18,12 @@ export interface CanvasRow {
   panels: string[];
 }
 
-export type MagicInputStates = "build" | "page-bg";
+export type MagicInputStates =
+  | "build"
+  | "page"
+  | "panel"
+  | "refine"
+  | "surprise";
 
 export interface AppState {
   currentComponent: DraggableStateComponent;
@@ -32,6 +37,8 @@ export interface AppState {
   isMagicInputToggled: boolean;
   dragHandlesColor: string | null;
   magicInputState: MagicInputStates;
+  pageProps: Record<string, Record<string, {}>>;
+  setPageProps: (props: Record<string, Record<string, {}>>) => void;
   setMagicInputState: (state: MagicInputStates) => void;
   setDragHandlesColor: (color: string) => void;
   setIsMagicInputToggled: (isToggled: boolean) => void;
@@ -82,6 +89,14 @@ export const useAppStore = create<AppState>()(
         isMagicInputToggled: false,
         dragHandlesColor: null,
         magicInputState: "build",
+        pageProps: { home: {} },
+        setPageProps: (props: Record<string, {}>) =>
+          set((state) => {
+            return {
+              ...state,
+              pageProps: Object.assign({}, state.pageProps, props),
+            };
+          }),
         setDragHandlesColor: (color: string) =>
           set((state) => {
             return {
@@ -357,6 +372,8 @@ export const useAppStore = create<AppState>()(
           storedComponents: state.storedComponents || [],
           canvasRows: state.canvasRows || [],
           isMagicInputHidden: state.isMagicInputHidden,
+          isMagicInputToggled: state.isMagicInputToggled,
+          // pageProps: { home: {} },
         };
       },
     }

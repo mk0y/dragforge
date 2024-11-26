@@ -36,6 +36,7 @@ const MagicInputArea = () => {
         onFinished={(jsx: string) => {
           appState?.setCurrentComponent({ jsx, id: nanoid() });
         }}
+        onSetPageProps={(gptAnswer) => {}}
       />
       <ActionItems className="p-1" />
     </div>

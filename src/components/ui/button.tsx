@@ -18,12 +18,18 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        teal: "hover:bg-sky-500/25 hover:text-accent-foreground",
-        blue: "hover:bg-teal-700/25 hover:text-accent-foreground",
+        teal: "hover:bg-teal-500/25 hover:text-accent-foreground",
+        "teal-active": "bg-teal-500/50 text-accent-foreground",
+        blue: "hover:bg-blue-400/25 hover:text-accent-foreground",
+        "blue-active": "bg-blue-500/50 text-accent-foreground",
         purple: "hover:bg-purple-700/25 hover:text-accent-foreground",
-        yellow: "hover:bg-yellow-700/25 hover:text-accent-foreground",
+        "purple-active": "bg-purple-700/50 text-accent-foreground",
+        yellow: "hover:bg-yellow-500/25 hover:text-accent-foreground",
+        "yellow-active": "bg-yellow-500/50 text-accent-foreground",
         green: "hover:bg-green-700/25 hover:text-accent-foreground",
+        "green-active": "bg-green-700/50 text-accent-foreground",
         pink: "hover:bg-rose-400/25 hover:text-accent-foreground",
+        "pink-active": "bg-rose-400/50 text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
@@ -51,7 +57,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          "transition-all",
+          buttonVariants({
+            variant,
+            size,
+            className,
+          })
+        )}
         ref={ref}
         {...props}
       />
