@@ -2,11 +2,15 @@
 import DraggableCanvas from "@/components/ui/draggable-canvas";
 import { useAppStore } from "@/hooks/app-store";
 import { useStore } from "@/hooks/use-store";
-import { Fragment } from "react";
+import { Fragment, useCallback, useEffect, useRef } from "react";
 import DroppablePanel from "./ui/droppable-panel";
 
-import { addOpacityToHex, cn } from "@/lib/utils";
+import { addOpacityToHex, areAllItemsEqual, cn } from "@/lib/utils";
+import debounce from "just-debounce-it";
+import { nanoid } from "nanoid";
+import { path } from "ramda";
 import JsxParser from "react-jsx-parser";
+import { ImperativePanelHandle } from "react-resizable-panels";
 import ArrangePanelsActions from "./ArrangePanelsActions";
 import {
   ResizableHandle,
@@ -19,7 +23,31 @@ const ResizablePanels = () => {
     panels = {},
     canvasRows = [],
     dragHandlesColor = null,
+    panelProps = {},
+    panelSizes = {},
+    setPanelSizes = () => {},
   } = useStore(useAppStore, (state) => state) || {};
+  const gridRefs = useRef<(ImperativePanelHandle | null)[][]>([]);
+  const debouncedSetPanelSizes = useCallback(
+    debounce((page = "home", rowIndex: number, sizes: number[]) => {
+      setPanelSizes(page, rowIndex, [...sizes]);
+    }, 200),
+    [setPanelSizes]
+  );
+  useEffect(() => {
+    const sizes = path(["home"], panelSizes);
+    if (Array.isArray(gridRefs.current[0]) && Array.isArray(sizes[0])) {
+      gridRefs.current.forEach((refRow, rowIndex) => {
+        if (!sizes[rowIndex]) {
+          return;
+        }
+        refRow.forEach((ref, panelIndex) => {
+          const panelSize = sizes[rowIndex][panelIndex];
+          ref?.resize(panelSize);
+        });
+      });
+    }
+  }, [path(["home", "length"], panelSizes), gridRefs, panelSizes]);
   return (
     <ResizablePanelGroup
       id="resizable-panel-canvas"
@@ -39,16 +67,29 @@ const ResizablePanels = () => {
               <ResizablePanelGroup
                 direction="horizontal"
                 className="h-full w-full overflow-visible"
+                onLayout={(sizes: number[]) => {
+                  if (!areAllItemsEqual(sizes)) {
+                    debouncedSetPanelSizes("home", rowIndex, sizes);
+                  }
+                }}
               >
                 {row.map((panel, panelIndex) => {
                   const droppablePanelId = `droppable-panel-${rowIndex}-${panelIndex}`;
+                  const panelId = `row-${rowIndex}-${panelIndex}`;
                   return (
                     <Fragment key={panelIndex}>
                       <ResizablePanel
-                        id={`row-${rowIndex}-${panelIndex}`}
+                        id={panelId}
                         order={panel.order}
-                        defaultSize={100 / row.length}
                         className="overflow-visible"
+                        ref={(el) => {
+                          if (!gridRefs.current[rowIndex]) {
+                            if (el) {
+                              gridRefs.current[rowIndex] = [];
+                              gridRefs.current[rowIndex].push(el);
+                            }
+                          }
+                        }}
                       >
                         <DroppablePanel
                           key={droppablePanelId}
@@ -106,7 +147,6 @@ const ResizablePanels = () => {
           </ResizablePanel>
           {rowIndex < canvasRows.length - 1 && (
             <ResizableHandle
-              hitAreaMargins={{ coarse: 1, fine: 1 }}
               className={cn(
                 "canvas-resize-handle outline-none relative",
                 dragHandlesColor &&
@@ -117,7 +157,7 @@ const ResizablePanels = () => {
                     0.75
                   )}]`
               )}
-              key={`handle-between-rows-${rowIndex}`}
+              key={nanoid()}
             />
           )}
         </Fragment>

@@ -2,7 +2,15 @@
 import { fromActiveId } from "@/lib/utils";
 import throttle from "just-throttle";
 import { nanoid } from "nanoid";
-import { append, assocPath, equals, filter, find } from "ramda";
+import {
+  append,
+  assocPath,
+  equals,
+  filter,
+  find,
+  mergeDeepRight,
+  update,
+} from "ramda";
 import { temporal } from "zundo";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -25,12 +33,16 @@ export type MagicInputStates =
   | "refine"
   | "surprise";
 
+export type SinglePanelProps = { height?: number; width?: number };
+
+export type PanelProps = Record<string, Record<string, SinglePanelProps>>;
+
 export interface AppState {
   currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
   panels: Record<string, Record<string, DraggableStateComponent[]>>;
-  panelProps: Record<string, Record<string, { height?: number }>>;
+  panelProps: PanelProps;
   canvasRows: { order: number }[][];
   isEditCanvas: boolean;
   isMagicInputHidden: boolean;
@@ -38,6 +50,8 @@ export interface AppState {
   dragHandlesColor: string | null;
   magicInputState: MagicInputStates;
   pageProps: Record<string, Record<string, {}>>;
+  panelSizes: Record<string, number[][]>;
+  setPanelSizes: (page: string, rowIndex: number, panelSizes: number[]) => void;
   setPageProps: (props: Record<string, Record<string, {}>>) => void;
   setMagicInputState: (state: MagicInputStates) => void;
   setDragHandlesColor: (color: string) => void;
@@ -70,7 +84,7 @@ export interface AppState {
   }: {
     page: string;
     panelId: string;
-    props: Record<string, unknown>;
+    props: SinglePanelProps;
   }) => void;
   removeByIdDroppedComponent: (id: string) => void;
   addStoredComponent: (id: string, page?: string) => void;
@@ -90,6 +104,33 @@ export const useAppStore = create<AppState>()(
         dragHandlesColor: null,
         magicInputState: "build",
         pageProps: { home: {} },
+        panels: { home: {} }, // panel components
+        panelProps: { home: {} }, // panel props (width, height...)
+        panelSizes: { home: [] },
+        canvasRows: [
+          [{ order: 1 }, { order: 2 }],
+          [{ order: 1 }, { order: 2 }],
+        ],
+        setPanelSizes: (
+          page: string,
+          rowIndex: number,
+          panelSizesOnRow: number[]
+        ) =>
+          set((state) => {
+            const currentPageRows = state.panelSizes[page] || [];
+            const newPanelSizes =
+              currentPageRows.length > rowIndex
+                ? update(rowIndex, panelSizesOnRow, currentPageRows)
+                : append(panelSizesOnRow, currentPageRows);
+            const newState = {
+              ...state,
+              panelSizes: {
+                ...state.panelSizes,
+                [page]: newPanelSizes,
+              },
+            };
+            return newState;
+          }),
         setPageProps: (props: Record<string, {}>) =>
           set((state) => {
             return {
@@ -120,12 +161,6 @@ export const useAppStore = create<AppState>()(
           }),
         toggleIsEditCanvas: () =>
           set((state) => ({ ...state, isEditCanvas: !state.isEditCanvas })),
-        panels: { home: {} }, // panel components
-        panelProps: { home: {} }, // panel props (width, height...)
-        canvasRows: [
-          [{ order: 1 }, { order: 2 }],
-          [{ order: 1 }, { order: 2 }],
-        ],
         setMagicInputState: (s: MagicInputStates) =>
           set((state) => {
             return {
@@ -277,12 +312,12 @@ export const useAppStore = create<AppState>()(
           }),
         updateCanvasPanel: ({ page = "home", panelId, props }) =>
           set((state) => {
-            const newPanelProps = assocPath(
-              [page, panelId, "height"],
-              props.height,
-              state.panelProps
-            );
-            return { ...state, panelProps: newPanelProps };
+            const updatedPanelProps = mergeDeepRight(state.panelProps, {
+              [page]: {
+                [panelId]: props,
+              },
+            });
+            return { ...state, panelProps: updatedPanelProps };
           }),
         addDroppedComponent: (activeId?: string) =>
           set((state) => {
@@ -354,27 +389,36 @@ export const useAppStore = create<AppState>()(
           }),
       }),
       {
-        partialize: ({ canvasRows, dragHandlesColor, pageProps }) => ({
+        partialize: ({
           canvasRows,
           dragHandlesColor,
           pageProps,
+          panelSizes,
+        }) => ({
+          canvasRows,
+          dragHandlesColor,
+          pageProps,
+          panelSizes,
         }),
         equality: (pastState, currentState) =>
           equals(pastState.canvasRows, currentState.canvasRows) &&
           pastState.dragHandlesColor == currentState.dragHandlesColor &&
-          equals(pastState.pageProps, currentState.pageProps),
+          equals(pastState.pageProps, currentState.pageProps) &&
+          equals(pastState.panelSizes, currentState.panelSizes),
         handleSet: (handleSet) =>
           throttle((state) => handleSet(state), 1000, { trailing: true }),
       }
     ),
     {
-      name: "inventory-items",
+      name: "app",
       partialize: (state) => {
         return {
           storedComponents: state.storedComponents || [],
           canvasRows: state.canvasRows || [],
           isMagicInputHidden: state.isMagicInputHidden,
           isMagicInputToggled: state.isMagicInputToggled,
+          panelProps: state.panelProps,
+          panelSizes: state.panelSizes,
           // pageProps: { home: {} },
         };
       },

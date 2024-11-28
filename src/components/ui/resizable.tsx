@@ -39,7 +39,6 @@ const ResizableHandle = ({
         let newNum = "";
         for (const mutation of mutationList) {
           if (mutation.type === "attributes" && droppableCanvas) {
-            const valuenow = handleParent?.getAttribute("aria-valuenow");
             const previousSibling = handleParent?.previousElementSibling;
             const hoverParent = handleParent?.getAttribute(
               "data-resize-handle-state"
@@ -47,7 +46,7 @@ const ResizableHandle = ({
             const direction = handleParent?.getAttribute(
               "data-panel-group-direction"
             );
-            if (previousSibling instanceof HTMLElement && valuenow) {
+            if (previousSibling instanceof HTMLElement) {
               const siblingHeightOrWidth =
                 direction === "vertical"
                   ? previousSibling.offsetHeight

@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useAppStore } from "./app-store";
 
 type EventType = MouseEvent | TouchEvent;
 
@@ -40,3 +41,15 @@ export const useClickOutside = (
     };
   }, [ref, handler]);
 };
+
+export const useIsPageLoaded = () => {
+  const ref = useRef(false);
+  useEffect(() => {
+    ref.current = true;
+  }, []);
+  return ref.current;
+};
+
+export const useAppStorePersistence = () => {
+  return useAppStore.persist;
+}

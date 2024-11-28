@@ -20,3 +20,8 @@ export const addOpacityToHex = (hex: string, opacity: number) => {
   const alphaHex = alpha.toString(16).padStart(2, '0');
   return `#${hex}${alphaHex}`;
 }
+
+export const areAllItemsEqual = (array: Array<unknown>) => {
+  if (array.length === 0) return true;
+  return array.every((item) => item === array[0]);
+}
