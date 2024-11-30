@@ -37,6 +37,8 @@ export type SinglePanelProps = { height?: number; width?: number };
 
 export type PanelProps = Record<string, Record<string, SinglePanelProps>>;
 
+export type DragUnit = "percentages" | "pixels";
+
 export interface AppState {
   currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
@@ -51,7 +53,10 @@ export interface AppState {
   magicInputState: MagicInputStates;
   pageProps: Record<string, Record<string, {}>>;
   panelSizes: Record<string, number[][]>;
-  setPanelSizes: (page: string, rowIndex: number, panelSizes: number[]) => void;
+  currentPage: string;
+  dragUnit: DragUnit;
+  setDragUnit: (dragUnit: DragUnit) => void;
+  setPanelSizes: (rowIndex: number, panelSizes: number[]) => void;
   setPageProps: (props: Record<string, Record<string, {}>>) => void;
   setMagicInputState: (state: MagicInputStates) => void;
   setDragHandlesColor: (color: string) => void;
@@ -65,29 +70,22 @@ export interface AppState {
   removeRow: (rowIndex: number) => void;
   setCurrentComponent: (c: DraggableStateComponent) => void;
   addDroppedComponent: (activeId?: string) => void;
-  addToCanvasPanel: (panelId: string, page: string) => void;
-  addToCanvasPanelFromInventory: (
-    panelId: string,
-    componentId: string,
-    page?: string
-  ) => void;
+  addToCanvasPanel: (panelId: string) => void;
+  addToCanvasPanelFromInventory: (panelId: string, componentId: string) => void;
   switchToCanvasPanel: (
     panelId: string,
     panelFromId: string,
-    componentId: string,
-    page: string
+    componentId: string
   ) => void;
   updateCanvasPanel: ({
-    page,
     panelId,
     props,
   }: {
-    page: string;
     panelId: string;
     props: SinglePanelProps;
   }) => void;
   removeByIdDroppedComponent: (id: string) => void;
-  addStoredComponent: (id: string, page?: string) => void;
+  addStoredComponent: (id: string) => void;
   clearInventory: () => void;
 }
 
@@ -111,13 +109,18 @@ export const useAppStore = create<AppState>()(
           [{ order: 1 }, { order: 2 }],
           [{ order: 1 }, { order: 2 }],
         ],
-        setPanelSizes: (
-          page: string,
-          rowIndex: number,
-          panelSizesOnRow: number[]
-        ) =>
+        currentPage: "home",
+        dragUnit: "pixels",
+        setDragUnit: (dragUnit: DragUnit) =>
           set((state) => {
-            const currentPageRows = state.panelSizes[page] || [];
+            return {
+              ...state,
+              dragUnit,
+            };
+          }),
+        setPanelSizes: (rowIndex: number, panelSizesOnRow: number[]) =>
+          set((state) => {
+            const currentPageRows = state.panelSizes[state.currentPage] || [];
             const newPanelSizes =
               currentPageRows.length > rowIndex
                 ? update(rowIndex, panelSizesOnRow, currentPageRows)
@@ -126,7 +129,7 @@ export const useAppStore = create<AppState>()(
               ...state,
               panelSizes: {
                 ...state.panelSizes,
-                [page]: newPanelSizes,
+                [state.currentPage]: newPanelSizes,
               },
             };
             return newState;
@@ -247,33 +250,33 @@ export const useAppStore = create<AppState>()(
           set((state) => {
             return { ...state, currentComponent: { jsx: c.jsx, id: c.id } };
           }),
-        addToCanvasPanel: (panelId, page = "home") =>
+        addToCanvasPanel: (panelId) =>
           // panels: { "home": { "panel-1": [ { jsx, id }, { jsx, id }]} }
           set((state) => {
             const newState = {
               ...state,
               panels: assocPath(
-                [page, panelId],
+                [state.currentPage, panelId],
                 append(
                   { ...state.currentComponent },
-                  state.panels[page][panelId]
+                  state.panels[state.currentPage][panelId]
                 ),
                 state.panels
               ),
             };
             return newState;
           }),
-        addToCanvasPanelFromInventory: (panelId, componentId, page = "home") =>
+        addToCanvasPanelFromInventory: (panelId, componentId) =>
           set((state) => {
             const c = state.storedComponents?.find((c) => c.id == componentId);
             if (c) {
               return {
                 ...state,
                 panels: assocPath(
-                  [page, panelId],
+                  [state.currentPage, panelId],
                   append(
                     { jsx: c.jsx, id: nanoid() },
-                    state.panels[page][panelId]
+                    state.panels[state.currentPage][panelId]
                   ),
                   state.panels
                 ),
@@ -282,27 +285,23 @@ export const useAppStore = create<AppState>()(
               return state;
             }
           }),
-        switchToCanvasPanel: (
-          panelId,
-          panelFromId,
-          componentId,
-          page = "home"
-        ) =>
+        switchToCanvasPanel: (panelId, panelFromId, componentId) =>
           set((state) => {
             const componentToMove = find<DraggableStateComponent>(
               (val: DraggableStateComponent) => val.id === componentId,
-              state.panels[page][panelFromId]
+              state.panels[state.currentPage][panelFromId]
             );
             const updatedPanelFrom = filter(
               (c: DraggableStateComponent) => c.id != componentId,
-              state.panels[page][panelFromId]
+              state.panels[state.currentPage][panelFromId]
             );
-            const currentPanelTo = state.panels[page][panelId] || [];
+            const currentPanelTo =
+              state.panels[state.currentPage][panelId] || [];
             const updatedPanelTo = append(componentToMove, currentPanelTo);
             const newState = assocPath(
-              ["panels", "home"],
+              ["panels", state.currentPage],
               {
-                ...state.panels.home,
+                ...state.panels[state.currentPage],
                 [panelId]: updatedPanelTo,
                 [panelFromId]: updatedPanelFrom,
               },
@@ -310,10 +309,10 @@ export const useAppStore = create<AppState>()(
             );
             return newState;
           }),
-        updateCanvasPanel: ({ page = "home", panelId, props }) =>
+        updateCanvasPanel: ({ panelId, props }) =>
           set((state) => {
             const updatedPanelProps = mergeDeepRight(state.panelProps, {
-              [page]: {
+              [state.currentPage]: {
                 [panelId]: props,
               },
             });
@@ -365,10 +364,10 @@ export const useAppStore = create<AppState>()(
               return state;
             }
           }),
-        addStoredComponent: (activeId: string, page = "home") =>
+        addStoredComponent: (activeId: string) =>
           set((state) => {
             const [panelId, componentId] = fromActiveId(activeId);
-            const c = state.panels[page][panelId].find(
+            const c = state.panels[state.currentPage][panelId].find(
               (c) => c.id == componentId
             );
             if (c) {

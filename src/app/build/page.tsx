@@ -1,6 +1,7 @@
 "use client";
 import AddNewRow from "@/components/canvas-actions/AddNewRow";
 import PaintResizableHandle from "@/components/canvas-actions/PaintResizableHandle";
+import PercentUnits from "@/components/canvas-actions/PercentUnits";
 import PreviewCanvas from "@/components/canvas-actions/PreviewCanvas";
 import SplitCanvasMode from "@/components/canvas-actions/SplitCanvasMode";
 import UndoRedoActions from "@/components/canvas-actions/UndoRedoActions";
@@ -59,6 +60,7 @@ export default function App() {
             <div className="w-9 h-full pt-9 dark:bg-secondary flex flex-col flex-0">
               <SplitCanvasMode />
               <AddNewRow />
+              <PercentUnits />
               <PaintResizableHandle />
             </div>
             <div className="flex flex-1 flex-col h-full w-full">

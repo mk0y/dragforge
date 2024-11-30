@@ -10,7 +10,10 @@ import debounce from "just-debounce-it";
 import { nanoid } from "nanoid";
 import { path } from "ramda";
 import JsxParser from "react-jsx-parser";
-import { ImperativePanelHandle } from "react-resizable-panels";
+import {
+  ImperativePanelGroupHandle,
+  ImperativePanelHandle,
+} from "react-resizable-panels";
 import ArrangePanelsActions from "./ArrangePanelsActions";
 import {
   ResizableHandle,
@@ -28,6 +31,7 @@ const ResizablePanels = () => {
     setPanelSizes = () => {},
   } = useStore(useAppStore, (state) => state) || {};
   const gridRefs = useRef<(ImperativePanelHandle | null)[][]>([]);
+  const groupRef = useRef<ImperativePanelGroupHandle>(null);
   const debouncedSetPanelSizes = useCallback(
     debounce((page = "home", rowIndex: number, sizes: number[]) => {
       setPanelSizes(page, rowIndex, [...sizes]);
@@ -48,11 +52,24 @@ const ResizablePanels = () => {
       });
     }
   }, [path(["home", "length"], panelSizes), gridRefs, panelSizes]);
+  useEffect(() => {
+    console.log({ canvasRows });
+    if (canvasRows.length) {
+      // groupRef.current?.setLayout([10, 90]);
+    }
+  }, [canvasRows]);
   return (
     <ResizablePanelGroup
       id="resizable-panel-canvas"
       direction="vertical"
-      className="min-h-[400px] w-full overflow-visible"
+      className="resizable-rows w-full overflow-visible"
+      ref={groupRef}
+      onLayout={(layout) => {
+        // console.log(layout);
+        if (!areAllItemsEqual(layout)) {
+          // debouncedSetPanelSizes("home", rowIndex, sizes);
+        }
+      }}
     >
       {canvasRows?.map((row, rowIndex) => (
         <Fragment key={`row-${rowIndex}`}>
@@ -60,8 +77,6 @@ const ResizablePanels = () => {
             id={`row-${rowIndex}`}
             order={rowIndex + 1}
             className="overflow-visible"
-            defaultSize={100 / canvasRows.length}
-            minSize={0}
           >
             <div className="relative w-full h-full">
               <ResizablePanelGroup
