@@ -72,8 +72,8 @@ export default function App() {
                 id="droppable-canvas"
                 className={cn(
                   "droppable-canvas flex flex-1 h-full w-full shadow-md border-0 border-transparent",
-                  appState?.pageProps["home"]?.pageCss &&
-                    `${appState?.pageProps["home"]?.pageCss}`
+                  appState?.pageProps[appState.currentPage]?.pageCss &&
+                    `${appState?.pageProps[appState.currentPage]?.pageCss}`
                 )}
               >
                 <ResizablePanels />

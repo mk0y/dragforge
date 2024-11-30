@@ -28,18 +28,19 @@ const ResizablePanels = () => {
     dragHandlesColor = null,
     panelProps = {},
     panelSizes = {},
+    currentPage = "home",
     setPanelSizes = () => {},
   } = useStore(useAppStore, (state) => state) || {};
   const gridRefs = useRef<(ImperativePanelHandle | null)[][]>([]);
   const groupRef = useRef<ImperativePanelGroupHandle>(null);
   const debouncedSetPanelSizes = useCallback(
-    debounce((page = "home", rowIndex: number, sizes: number[]) => {
-      setPanelSizes(page, rowIndex, [...sizes]);
+    debounce((rowIndex: number, sizes: number[]) => {
+      setPanelSizes(rowIndex, [...sizes]);
     }, 200),
     [setPanelSizes]
   );
   useEffect(() => {
-    const sizes = path(["home"], panelSizes);
+    const sizes = path([currentPage], panelSizes);
     if (Array.isArray(gridRefs.current[0]) && Array.isArray(sizes[0])) {
       gridRefs.current.forEach((refRow, rowIndex) => {
         if (!sizes[rowIndex]) {
@@ -51,7 +52,7 @@ const ResizablePanels = () => {
         });
       });
     }
-  }, [path(["home", "length"], panelSizes), gridRefs, panelSizes]);
+  }, [path([currentPage, "length"], panelSizes), gridRefs, panelSizes]);
   useEffect(() => {
     console.log({ canvasRows });
     if (canvasRows.length) {
@@ -84,7 +85,7 @@ const ResizablePanels = () => {
                 className="h-full w-full overflow-visible"
                 onLayout={(sizes: number[]) => {
                   if (!areAllItemsEqual(sizes)) {
-                    debouncedSetPanelSizes("home", rowIndex, sizes);
+                    debouncedSetPanelSizes(rowIndex, sizes);
                   }
                 }}
               >
@@ -112,10 +113,10 @@ const ResizablePanels = () => {
                           dropped={false}
                         >
                           {panels && // list panel components
-                          panels["home"] &&
-                          panels["home"][droppablePanelId] &&
-                          panels["home"][droppablePanelId].length
-                            ? panels["home"][droppablePanelId].map((c, i) => {
+                          panels[currentPage] &&
+                          panels[currentPage][droppablePanelId] &&
+                          panels[currentPage][droppablePanelId].length
+                            ? panels[currentPage][droppablePanelId].map((c, i) => {
                                 return (
                                   <DraggableCanvas
                                     key={c.id}

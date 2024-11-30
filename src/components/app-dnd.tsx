@@ -17,7 +17,7 @@ const AppDnd = ({ children }: { children: React.ReactNode }) => {
         overId.startsWith("droppable-panel-") &&
         activeId === "draggable"
       ) {
-        appState.addToCanvasPanel(overId, "home");
+        appState.addToCanvasPanel(overId);
         appState.setCurrentComponent({});
       } else if (
         appState &&
@@ -28,7 +28,7 @@ const AppDnd = ({ children }: { children: React.ReactNode }) => {
       ) {
         const [overIdFrom, componentId] = fromActiveId(activeId);
         if (overId != overIdFrom) {
-          appState.switchToCanvasPanel(overId, overIdFrom, componentId, "home");
+          appState.switchToCanvasPanel(overId, overIdFrom, componentId);
         }
       } else if (
         appState &&
