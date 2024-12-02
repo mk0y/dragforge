@@ -40,6 +40,7 @@ const ResizableHandle = ({
         for (const mutation of mutationList) {
           if (mutation.type === "attributes" && droppableCanvas) {
             const previousSibling = handleParent?.previousElementSibling;
+            const nextSibling = handleParent?.nextElementSibling;
             const hoverParent = handleParent?.getAttribute(
               "data-resize-handle-state"
             );
@@ -47,15 +48,24 @@ const ResizableHandle = ({
               "data-panel-group-direction"
             );
             if (previousSibling instanceof HTMLElement) {
-              const siblingHeightOrWidth =
+              const prevSiblingHeightOrWidth =
                 direction === "vertical"
                   ? previousSibling.offsetHeight
                   : previousSibling.offsetWidth;
+              let nextSiblingHeightOrWidth = null;
+              if (nextSibling && nextSibling instanceof HTMLElement) {
+                nextSiblingHeightOrWidth =
+                  direction === "vertical"
+                    ? nextSibling.offsetHeight
+                    : nextSibling.offsetWidth;
+              }
               newHoverState =
                 hoverParent === "hover" || hoverParent === "drag"
                   ? hoverParent
                   : "";
-              newNum = `${siblingHeightOrWidth}`;
+              newNum = nextSiblingHeightOrWidth
+                ? `${prevSiblingHeightOrWidth} | ${nextSiblingHeightOrWidth}`
+                : `${prevSiblingHeightOrWidth}`;
             }
           }
         }
@@ -78,7 +88,7 @@ const ResizableHandle = ({
     >
       <span
         className={cn(
-          "resize-handle-span w-8 h-8 items-center justify-center text-center flex delay-75 text-muted-foreground bg-muted rounded-full p-1 transition-all z-30",
+          "resize-handle-span absolute w-24 h-8 items-center justify-center text-center flex delay-75 text-muted-foreground bg-muted rounded-full p-1 transition-all z-30",
           hoverState == "hover" || hoverState == "drag"
             ? "opacity-100"
             : "opacity-0"

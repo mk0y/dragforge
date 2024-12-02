@@ -39,13 +39,15 @@ export type PanelProps = Record<string, Record<string, SinglePanelProps>>;
 
 export type DragUnit = "percentages" | "pixels";
 
+const DEFAULT_ROW_HEIGHT = 100;
+
 export interface AppState {
   currentComponent: DraggableStateComponent;
   droppedComponents?: DraggableStateComponent[];
   storedComponents?: DraggableStateComponent[];
   panels: Record<string, Record<string, DraggableStateComponent[]>>;
   panelProps: PanelProps;
-  canvasRows: { order: number }[][];
+  canvasRows: { order?: number; size?: number }[][];
   isEditCanvas: boolean;
   isMagicInputHidden: boolean;
   isMagicInputToggled: boolean;
@@ -53,10 +55,12 @@ export interface AppState {
   magicInputState: MagicInputStates;
   pageProps: Record<string, Record<string, {}>>;
   panelSizes: Record<string, number[][]>;
+  rowSizes: Record<string, number[]>;
   currentPage: string;
   dragUnit: DragUnit;
   setDragUnit: (dragUnit: DragUnit) => void;
   setPanelSizes: (rowIndex: number, panelSizes: number[]) => void;
+  setRowSizes: (rows: number[]) => void;
   setPageProps: (props: Record<string, Record<string, {}>>) => void;
   setMagicInputState: (state: MagicInputStates) => void;
   setDragHandlesColor: (color: string) => void;
@@ -105,10 +109,8 @@ export const useAppStore = create<AppState>()(
         panels: { home: {} }, // panel components
         panelProps: { home: {} }, // panel props (width, height...)
         panelSizes: { home: [] },
-        canvasRows: [
-          [{ order: 1 }, { order: 2 }],
-          [{ order: 1 }, { order: 2 }],
-        ],
+        rowSizes: { home: [DEFAULT_ROW_HEIGHT, 0] },
+        canvasRows: [[{}], [{}]],
         currentPage: "home",
         dragUnit: "pixels",
         setDragUnit: (dragUnit: DragUnit) =>
@@ -133,6 +135,13 @@ export const useAppStore = create<AppState>()(
               },
             };
             return newState;
+          }),
+        setRowSizes: (rowSizes: number[]) =>
+          set((state) => {
+            return {
+              ...state,
+              rowSizes: { [state.currentPage]: rowSizes },
+            };
           }),
         setPageProps: (props: Record<string, {}>) =>
           set((state) => {
@@ -174,14 +183,7 @@ export const useAppStore = create<AppState>()(
         addCanvasPanel: (rowIndex: number) =>
           set((state) => {
             const newRows = state.canvasRows.map((row, i) => {
-              return i === rowIndex
-                ? [
-                    ...row,
-                    {
-                      order: row.length + 1,
-                    },
-                  ]
-                : row;
+              return i === rowIndex ? [...row, {}] : row;
             });
             return {
               ...state,
@@ -200,21 +202,25 @@ export const useAppStore = create<AppState>()(
           }),
         addCanvasRow: (rowIndex?: number) =>
           set((state) => {
-            const newRow = [{ order: 1 }];
+            const newRow = [{}];
             const updatedRows = [...state.canvasRows];
+            const rowSizes = [...state.rowSizes[state.currentPage]];
             if (rowIndex !== undefined) {
               updatedRows.splice(rowIndex + 1, 0, newRow);
+              rowSizes.splice(rowIndex + 1, 0, DEFAULT_ROW_HEIGHT);
             } else {
               updatedRows.push(newRow);
+              rowSizes.push(DEFAULT_ROW_HEIGHT);
             }
             return {
               ...state,
               canvasRows: updatedRows,
+              rowSizes: { [state.currentPage]: rowSizes },
             };
           }),
         addCanvasRowAbove: (rowIndex: number) =>
           set((state) => {
-            const newRow = [{ order: 1 }];
+            const newRow = [{}];
             const updatedRows = [...state.canvasRows];
             if (rowIndex !== undefined) {
               updatedRows.splice(rowIndex, 0, newRow);
@@ -393,17 +399,20 @@ export const useAppStore = create<AppState>()(
           dragHandlesColor,
           pageProps,
           panelSizes,
+          rowSizes,
         }) => ({
           canvasRows,
           dragHandlesColor,
           pageProps,
           panelSizes,
+          rowSizes,
         }),
         equality: (pastState, currentState) =>
           equals(pastState.canvasRows, currentState.canvasRows) &&
           pastState.dragHandlesColor == currentState.dragHandlesColor &&
           equals(pastState.pageProps, currentState.pageProps) &&
-          equals(pastState.panelSizes, currentState.panelSizes),
+          equals(pastState.panelSizes, currentState.panelSizes) &&
+          equals(pastState.rowSizes, currentState.rowSizes),
         handleSet: (handleSet) =>
           throttle((state) => handleSet(state), 1000, { trailing: true }),
       }
@@ -418,6 +427,7 @@ export const useAppStore = create<AppState>()(
           isMagicInputToggled: state.isMagicInputToggled,
           panelProps: state.panelProps,
           panelSizes: state.panelSizes,
+          rowSizes: state.rowSizes,
           // pageProps: { home: {} },
         };
       },

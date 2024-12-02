@@ -96,9 +96,9 @@
       );
     }
     .droppable-canvas {
-      background-image: linear-gradient(to right, #eaeaea 1px, transparent 1px),
+      /* background-image: linear-gradient(to right, #eaeaea 1px, transparent 1px),
         linear-gradient(to bottom, #eaeaea 1px, transparent 1px);
-      background-size: 32px 32px;
+      background-size: 32px 32px; */
       background-color: #fafaf1;
     }
     .canvas-resize-handle {
@@ -121,9 +121,9 @@
       );
     }
     .droppable-canvas {
-      background-image: linear-gradient(to right, #1a1616 1px, transparent 1px),
+      /* background-image: linear-gradient(to right, #1a1616 1px, transparent 1px),
         linear-gradient(to bottom, #1a1616, transparent 1px);
-      background-size: 32px 32px;
+      background-size: 32px 32px; */
       background-color: #0a0a08;
     }
     .canvas-resize-handle {
